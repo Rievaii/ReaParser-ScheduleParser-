@@ -6,7 +6,7 @@
         {
             //15.27Д-ИСТ15/22б
             ReaParser reaParser = new ReaParser();
-            reaParser.GetSchedule();
+            reaParser.GetSchedule("15.27Д-ИСТ15/22б", 3);
         }
     }
 }
