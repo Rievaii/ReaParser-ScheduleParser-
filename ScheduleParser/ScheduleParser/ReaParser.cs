@@ -141,6 +141,10 @@ namespace ScheduleParser
                 for (int i = 1; i < 6; i++)
                 {
                     var AmountOfClasses = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody"), 10).GetAttribute("childElementCount");
+                    var WeekDay = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/thead/tr/th/h5"), 10);
+
+                    Console.WriteLine(WeekDay.Text);
+
                     for (int j = 1; j < Int32.Parse(AmountOfClasses)+1; j++)
                     {
                         var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody/tr[{j}]"), 50);
