@@ -3,8 +3,6 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 
 namespace ScheduleParser
@@ -14,14 +12,14 @@ namespace ScheduleParser
     internal class ReaParser
     {
         private IWebDriver driver = new ChromeDriver();
-        
+
         public void GetSchedule(string GroupId)
         {
             string URL = "https://rasp.rea.ru/";
 
             string _GroupId = GroupId;
 
-            
+
             var web = new HtmlWeb();
 
             try
@@ -41,11 +39,11 @@ namespace ScheduleParser
 
             Thread.Sleep(2000);
 
-            
+
             //Get one day schedule block
             try
             {
-                
+
                 /*var slot= driver.FindElement(By.XPath("//*[@id='today']/thead/tr/th/h5"),10);
                 
                 Console.WriteLine(slot.GetAttribute("innerText"));
@@ -53,10 +51,10 @@ namespace ScheduleParser
                */
 
                 //get for the weekend 
-                for(int i = 1; i< 6; i++)
+                for (int i = 1; i < 6; i++)
                 {
-                    
-                    var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div"),10);
+
+                    var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div"), 10);
                     //*[@id="today"]/thead/tr/th/h5
                     //*[@id="zoneTimetable"]/div/div[3]/div/table/thead/tr/th/h5
                     //*[@id="zoneTimetable"]/div/div[4]/div/table/thead/tr/th/h5
@@ -77,7 +75,54 @@ namespace ScheduleParser
             {
                 Console.WriteLine("No such elements found");
             }
-            
+
+
+            Console.ReadLine();
+            driver.Quit();
+        }
+        public void GetSchedule(string GroupId, int weekday)
+        {
+            string URL = "https://rasp.rea.ru/";
+
+            string _GroupId = GroupId;
+
+
+            var web = new HtmlWeb();
+
+            try
+            {
+                driver.Navigate().GoToUrl(URL);
+
+                IWebElement input = driver.FindElement(By.CssSelector("#search"));
+                input.Click();
+
+
+                input.SendKeys(GroupId);
+                IWebElement search = driver.FindElement(By.Id("manual-search-btn"));
+                search.Click();
+
+            }
+            catch (Exception) { Console.WriteLine("Unable to open browser"); }
+
+            Thread.Sleep(2000);
+
+
+            //Get one day schedule block
+            try
+            {
+
+                var slot = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{weekday}]/div"), 10);
+
+                Console.WriteLine("---------------------CONSOLE OUTPUT:--------------------------");
+                Console.WriteLine(slot.Text);
+                Console.WriteLine("---------------------------------------------------------------");
+
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("No such elements found");
+            }
+
 
             Console.ReadLine();
             driver.Quit();
