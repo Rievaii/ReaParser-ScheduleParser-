@@ -15,12 +15,13 @@ namespace ScheduleParser
     {
         private IWebDriver driver = new ChromeDriver();
         
-        public void RunParse(string GroupId)
+        public void GetSchedule(string GroupId)
         {
             string URL = "https://rasp.rea.ru/";
 
             string _GroupId = GroupId;
 
+            
             var web = new HtmlWeb();
 
             try
@@ -40,22 +41,28 @@ namespace ScheduleParser
 
             Thread.Sleep(2000);
 
-            Console.WriteLine("---------------------CONSOLE OUTPUT:--------------------------");
+            
             //Get one day schedule block
             try
             {
-                var slot= driver.FindElement(By.XPath("//*[@id='zoneTimetable']/div/div[1]/div"),10);
-                ////*[@id="zoneTimetable"]/div/div[2]/div
+                
+                /*var slot= driver.FindElement(By.XPath("//*[@id='today']/thead/tr/th/h5"),10);
+                
                 Console.WriteLine(slot.GetAttribute("innerText"));
                 Console.WriteLine(slot.Text);
+               */
 
                 //get for the weekend 
                 for(int i = 1; i< 6; i++)
                 {
                     
                     var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div"),10);
-
-                    if(block == null)
+                    //*[@id="today"]/thead/tr/th/h5
+                    //*[@id="zoneTimetable"]/div/div[3]/div/table/thead/tr/th/h5
+                    //*[@id="zoneTimetable"]/div/div[4]/div/table/thead/tr/th/h5
+                    //var blockDate = driver.FindElement(By.XPath(""), 10);
+                    Console.WriteLine("---------------------CONSOLE OUTPUT:--------------------------");
+                    if (block == null)
                     {
                         Console.WriteLine("Нет занятий");
                     }
@@ -63,14 +70,14 @@ namespace ScheduleParser
                     {
                         Console.WriteLine(block.Text);
                     }
-                    
+                    Console.WriteLine("---------------------------------------------------------------");
                 }
             }
             catch (Exception)
             {
                 Console.WriteLine("No such elements found");
             }
-            Console.WriteLine("---------------------------------------------------------------");
+            
 
             Console.ReadLine();
             driver.Quit();

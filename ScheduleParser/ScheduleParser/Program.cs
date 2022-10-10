@@ -5,7 +5,7 @@
         private static void Main(string[] args)
         {
             ReaParser reaParser = new ReaParser();
-            reaParser.RunParse("15.27Д-ИСТ15/22б");
+            reaParser.GetSchedule("15.27Д-ИСТ15/22б");
         }
     }
 }
