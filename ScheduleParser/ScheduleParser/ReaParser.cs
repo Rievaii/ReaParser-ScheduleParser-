@@ -11,6 +11,7 @@ namespace ScheduleParser
     {
         private IWebDriver driver = new ChromeDriver();
 
+        //get schedule for the week
         public void GetSchedule(string _GroupId)
         {
             string URL = "https://rasp.rea.ru/";
@@ -30,35 +31,25 @@ namespace ScheduleParser
                 IWebElement search = driver.FindElement(By.Id("manual-search-btn"));
                 search.Click();
             }
-            catch (Exception) { Console.WriteLine("Unable to get to website"); }
+            catch (Exception) { Console.WriteLine("Unable to get to the website"); }
 
             Thread.Sleep(2000);
 
             try
             {
-
-                //get by each class
                 for (int i = 1; i < 6; i++)
                 {
                     var AmountOfClasses = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody"), 10).GetAttribute("childElementCount");
                     var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/thead/tr/th/h5"), 10);
 
                     Console.WriteLine(WeekDayLabel.Text);
+                    Console.WriteLine("---------------------CONSOLE OUTPUT:--------------------------");
 
                     for (int j = 1; j < Int32.Parse(AmountOfClasses) + 1; j++)
                     {
                         var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody/tr[{j}]"), 50);
 
-                        Console.WriteLine("---------------------CONSOLE OUTPUT:--------------------------");
-
-                        if (block == null)
-                        {
-                            Console.WriteLine("Нет пары");
-                        }
-                        else
-                        {
-                            Console.WriteLine(block.Text);
-                        }
+                        Console.WriteLine(block.Text);
 
                         Console.WriteLine("---------------------------------------------------------------");
                     }
@@ -72,7 +63,8 @@ namespace ScheduleParser
             Console.ReadLine();
             driver.Quit();
         }
-        //:Override for current day
+
+        //:Override for an exact day 
         public void GetSchedule(string _GroupId, int _WeekDay)
         {
             string URL = "https://rasp.rea.ru/";
@@ -92,7 +84,7 @@ namespace ScheduleParser
                 IWebElement search = driver.FindElement(By.Id("manual-search-btn"));
                 search.Click();
             }
-            catch (Exception) { Console.WriteLine("Unable to get to website"); }
+            catch (Exception) { Console.WriteLine("Unable to get to the website"); }
 
             Thread.Sleep(2000);
 
@@ -102,13 +94,12 @@ namespace ScheduleParser
                 var AmountOfClasses = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{_WeekDay}]/div/table/tbody"), 10).GetAttribute("childElementCount");
                 var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{_WeekDay}]/div/table/thead/tr/th/h5"), 10);
 
+                Console.WriteLine("---------------------CONSOLE OUTPUT:--------------------------");
                 Console.WriteLine(WeekDayLabel.Text);
 
                 for (int j = 1; j < Int32.Parse(AmountOfClasses) + 1; j++)
                 {
                     var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{_WeekDay}]/div/table/tbody/tr[{j}]"), 50);
-
-                    Console.WriteLine("---------------------CONSOLE OUTPUT:--------------------------");
 
                     Console.WriteLine(block.Text);
 
@@ -129,11 +120,14 @@ namespace ScheduleParser
     {
         public static IWebElement FindElement(this IWebDriver driver, By by, int timeoutInSeconds)
         {
-            if (timeoutInSeconds > 0)
+            try
             {
-                var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
-                return wait.Until(drv => drv.FindElement(by));
-            }
+                if (timeoutInSeconds > 0)
+                {
+                    var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
+                    return wait.Until(drv => drv.FindElement(by));
+                }
+            }catch (Exception ex) { Console.WriteLine(ex); }                    
             return driver.FindElement(by);
         }
     }
