@@ -3,7 +3,6 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 
 namespace ScheduleParser
@@ -36,12 +35,12 @@ namespace ScheduleParser
             Thread.Sleep(2000);
 
             try
-            { 
+            {
                 //get for the weekend 
                 for (int i = 1; i < 6; i++)
                 {
                     var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div"), 10);
-                    
+
                     Console.WriteLine("---------------------CONSOLE OUTPUT:--------------------------");
 
                     if (block == null)
@@ -70,7 +69,7 @@ namespace ScheduleParser
 
             string _GroupId = GroupId;
 
-            if(weekday < 1 || weekday > 6)
+            if (weekday < 1 || weekday > 6)
             {
                 throw new Exception("Weekday does not exist");
             }
@@ -137,28 +136,33 @@ namespace ScheduleParser
 
             try
             {
-                //test by each class 
-                for (int i = 1; i < 4; i++)
+                
+                //get by each class
+                for (int i = 1; i < 6; i++)
                 {
-                    var block = driver.FindElement(By.XPath($"//*[@id='today']/tbody/tr[{i}]"), 10);
-
-                    Console.WriteLine("---------------------CONSOLE OUTPUT:--------------------------");
-
-                    if (block == null)
+                    var AmountOfClasses = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody"), 10).GetAttribute("childElementCount");
+                    for (int j = 1; j < Int32.Parse(AmountOfClasses)+1; j++)
                     {
-                        Console.WriteLine("Нет занятий");
-                    }
-                    else
-                    {
-                        Console.WriteLine(block.Text);
-                    }
+                        var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody/tr[{j}]"), 50);
 
-                    Console.WriteLine("---------------------------------------------------------------");
+                        Console.WriteLine("---------------------CONSOLE OUTPUT:--------------------------");
+
+                        if (block == null)
+                        {
+                            Console.WriteLine("Нет пары");
+                        }
+                        else
+                        {
+                            Console.WriteLine(block.Text);
+                        }
+
+                        Console.WriteLine("---------------------------------------------------------------");
+                    }
                 }
             }
-            catch (Exception)
+            catch (OpenQA.Selenium.NoSuchElementException)
             {
-                Console.WriteLine("No such elements found");
+                Console.WriteLine("Нет занятий");
             }
 
             Console.ReadLine();
