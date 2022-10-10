@@ -15,11 +15,11 @@ namespace ScheduleParser
     {
         private IWebDriver driver = new ChromeDriver();
         
-        public void RunParse(string _URL)
+        public void RunParse(string GroupId)
         {
             string URL = "https://rasp.rea.ru/";
 
-            string GroupId = "15.27Д-ИСТ15/22б";
+            string _GroupId = GroupId;
 
             var web = new HtmlWeb();
 
@@ -41,21 +41,30 @@ namespace ScheduleParser
             Thread.Sleep(2000);
 
             Console.WriteLine("---------------------CONSOLE OUTPUT:--------------------------");
+            //Get one day schedule block
             try
             {
                 var slot= driver.FindElement(By.XPath("//*[@id='zoneTimetable']/div/div[1]/div"),10);
+                ////*[@id="zoneTimetable"]/div/div[2]/div
                 Console.WriteLine(slot.GetAttribute("innerText"));
                 Console.WriteLine(slot.Text);
 
-                /*Console.WriteLine(slots.Count);
-
-                for (int i = 0; i < slots.Count; i++)
+                //get for the weekend 
+                for(int i = 1; i< 6; i++)
                 {
-                    Console.WriteLine(slots[i].GetAttribute("innerText"));
-                    Console.WriteLine(slots[i]);
-                    Console.WriteLine(slots[i].Text);
+                    
+                    var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div"),10);
+
+                    if(block == null)
+                    {
+                        Console.WriteLine("Нет занятий");
+                    }
+                    else
+                    {
+                        Console.WriteLine(block.Text);
+                    }
+                    
                 }
-                */
             }
             catch (Exception)
             {
