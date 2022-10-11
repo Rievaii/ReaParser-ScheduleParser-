@@ -33,7 +33,6 @@ namespace ScheduleParser
 
             var settings = api.Groups.GetLongPollServer(215942977);
 
-
             var keyboard = new KeyboardBuilder()
                 .AddButton("Расписание на сегодня", "btnValue", KeyboardButtonColor.Positive)
                 .SetInline(false)
@@ -42,7 +41,6 @@ namespace ScheduleParser
                 .AddButton("Расписание на неделю", "btnValue", KeyboardButtonColor.Primary)
                 .AddButton("Назад", "btnValue", KeyboardButtonColor.Default)
                 .Build();
-
 
             while (true)
             {
@@ -60,15 +58,16 @@ namespace ScheduleParser
                     {
                         if (element.Instance is MessageNew messageNew)
                         {
+                            string IncomeMessage = element.MessageNew.Message.Text;
+                            Console.WriteLine(IncomeMessage); 
                             api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
                             {
                                 RandomId = rnd.Next(100000),
                                 ChatId = 2,
                                 UserId = api.UserId.Value,
                                 Keyboard = keyboard,
-                                Message = "request params"
+                                Message = "Расписание РЭУ"
                             });
-
                         }
                     }
                 }
@@ -86,7 +85,6 @@ namespace ScheduleParser
                     Console.WriteLine(e.Message);
                 }
             }
-            Console.ReadLine();
         }
     }
 }
