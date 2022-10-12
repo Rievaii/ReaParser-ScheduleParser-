@@ -14,6 +14,7 @@ using VkNet.Model.Keyboard;
 
 namespace ScheduleParser
 {
+    //make it async
     internal class VKBot
     {
         VkApi api = new VkApi();
@@ -24,8 +25,6 @@ namespace ScheduleParser
 
         public void Connect()
         {
-            
-
             api.Authorize(new ApiAuthParams
             {
                 AccessToken = "vk1.a.pE-uai9Z_ikQ0A0ZIjqbBJZhD2-uGVrNn5jhlkult4jtKhDpRq3czBEBy6FoZehh8MSvsJ4NK7_AGj6c706k6FbmzRBoTmeWsbThCgdOKZeUCaANnNlHh_GTZ_zeTojHFrbeAY6rfeibzeot3MqLGFVw4PyFhW-0msTFcANTM023Pw9Eq1gne8_KEgJQSszZ"
@@ -59,15 +58,41 @@ namespace ScheduleParser
                         if (element.Instance is MessageNew messageNew)
                         {
                             string IncomeMessage = element.MessageNew.Message.Text;
-                            Console.WriteLine(IncomeMessage); 
-                            api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
+                            Console.WriteLine(IncomeMessage);
+
+                            if (element.Instance.Equals("Расписание на сегодня"))
                             {
-                                RandomId = rnd.Next(100000),
-                                ChatId = 2,
-                                UserId = api.UserId.Value,
-                                Keyboard = keyboard,
-                                Message = "Расписание РЭУ"
-                            });
+                                api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
+                                {
+                                    RandomId = rnd.Next(100000),
+                                    ChatId = 2,
+                                    UserId = api.UserId.Value,
+                                    Keyboard = keyboard,
+                                    Message = "Расписание на день"
+                                });
+                            }
+                            else if(element.Instance.Equals("Расписание на неделю"))
+                            {
+                                api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
+                                {
+                                    RandomId = rnd.Next(100000),
+                                    ChatId = 2,
+                                    UserId = api.UserId.Value,
+                                    Keyboard = keyboard,
+                                    Message = "Расписание на неделю"
+                                });
+                            }
+                            else
+                            {
+                                api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
+                                {
+                                    RandomId = rnd.Next(100000),
+                                    ChatId = 2,
+                                    UserId = api.UserId.Value,
+                                    Keyboard = keyboard,
+                                    Message = "Расписание РЭУ"
+                                });
+                            }
                         }
                     }
                 }

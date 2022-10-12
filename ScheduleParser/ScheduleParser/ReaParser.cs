@@ -3,10 +3,12 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace ScheduleParser
 {
+    //TODO: method return Dictionary with <string> <string> Date - Class
     internal class ReaParser
     {
         private IWebDriver driver = new ChromeDriver();
@@ -14,6 +16,7 @@ namespace ScheduleParser
         //get schedule for the week
         public void GetSchedule(string _GroupId)
         {
+
             string URL = "https://rasp.rea.ru/";
 
             string GroupId = _GroupId;
@@ -50,7 +53,8 @@ namespace ScheduleParser
                         var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody/tr[{j}]"), 50);
 
                         Console.WriteLine(block.Text);
-
+                        //result.Add(i.ToString() + " " + WeekDayLabel.Text,block.Text);
+                        
                         Console.WriteLine("---------------------------------------------------------------");
                     }
                 }
@@ -59,7 +63,7 @@ namespace ScheduleParser
             {
                 Console.WriteLine("Нет занятий");
             }
-
+            
             Console.ReadLine();
             driver.Quit();
         }
@@ -67,6 +71,7 @@ namespace ScheduleParser
         //:Override for an exact day 
         public void GetSchedule(string _GroupId, int _WeekDay)
         {
+
             string URL = "https://rasp.rea.ru/";
 
             string GroupId = _GroupId;
