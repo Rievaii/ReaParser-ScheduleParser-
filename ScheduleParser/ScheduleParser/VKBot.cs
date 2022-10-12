@@ -60,18 +60,7 @@ namespace ScheduleParser
                             string IncomeMessage = element.MessageNew.Message.Text;
                             Console.WriteLine(IncomeMessage);
 
-                            if (element.Instance.Equals("Расписание на сегодня"))
-                            {
-                                api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
-                                {
-                                    RandomId = rnd.Next(100000),
-                                    ChatId = 2,
-                                    UserId = api.UserId.Value,
-                                    Keyboard = keyboard,
-                                    Message = "Расписание на день"
-                                });
-                            }
-                            else if(element.Instance.Equals("Расписание на неделю"))
+                            if (messageNew.Message.Text == "Расписание на неделю")
                             {
                                 api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
                                 {
@@ -80,6 +69,17 @@ namespace ScheduleParser
                                     UserId = api.UserId.Value,
                                     Keyboard = keyboard,
                                     Message = "Расписание на неделю"
+                                });
+                            }
+                            else if (messageNew.Message.Text == "Расписание на день")
+                            {
+                                api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
+                                {
+                                    RandomId = rnd.Next(100000),
+                                    ChatId = 2,
+                                    UserId = api.UserId.Value,
+                                    Keyboard = keyboard,
+                                    Message = "Расписание на день"
                                 });
                             }
                             else
