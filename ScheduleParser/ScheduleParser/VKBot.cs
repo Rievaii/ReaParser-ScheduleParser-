@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VkNet;
 using VkNet.Enums.SafetyEnums;
 using VkNet.Exception;
@@ -14,7 +10,6 @@ using VkNet.Model.Keyboard;
 
 namespace ScheduleParser
 {
-    //make it async
     internal class VKBot
     {
         VkApi api = new VkApi();
@@ -41,6 +36,15 @@ namespace ScheduleParser
                 .AddButton("Назад", "btnValue", KeyboardButtonColor.Default)
                 .Build();
 
+            //lock group on user
+            var groupkeyboard = new KeyboardBuilder()
+                .AddButton("Указать номер группы", "btnValue", KeyboardButtonColor.Primary)
+                .AddButton("Поменять свою группу", "btnValue", KeyboardButtonColor.Default)
+                .SetInline(false)
+                .AddLine()
+                .AddButton("", "btnValue", KeyboardButtonColor.Default)
+                .Build();
+            
             while (true)
             {
                 try
@@ -57,9 +61,7 @@ namespace ScheduleParser
                     {
                         if (element.Instance is MessageNew messageNew)
                         {
-                            string IncomeMessage = element.MessageNew.Message.Text;
-                            Console.WriteLine(IncomeMessage);
-
+                            Console.WriteLine(messageNew.Message.Text);   
                             if (messageNew.Message.Text == "Расписание на неделю")
                             {
                                 api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams

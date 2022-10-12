@@ -12,7 +12,8 @@ namespace ScheduleParser
     internal class ReaParser
     {
         private IWebDriver driver = new ChromeDriver();
-
+        
+        //make it async
         //get schedule for the week
         public void GetSchedule(string _GroupId)
         {
@@ -95,7 +96,6 @@ namespace ScheduleParser
 
             try
             {
-
                 var AmountOfClasses = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{_WeekDay}]/div/table/tbody"), 10).GetAttribute("childElementCount");
                 var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{_WeekDay}]/div/table/thead/tr/th/h5"), 10);
 
@@ -132,7 +132,7 @@ namespace ScheduleParser
                     var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
                     return wait.Until(drv => drv.FindElement(by));
                 }
-            }catch (Exception ex) { Console.WriteLine(ex); }                    
+            }catch (Exception ex) { Console.WriteLine("Невозможно обнаружить элемент"); }                    
             return driver.FindElement(by);
         }
     }

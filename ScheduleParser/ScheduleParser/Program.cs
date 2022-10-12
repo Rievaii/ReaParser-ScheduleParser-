@@ -8,8 +8,8 @@
             ReaParser reaParser = new ReaParser();
             VKBot vk = new VKBot();
 
-            //reaParser.GetSchedule("15.27Д-ИСТ15/22б");
-            vk.Connect();
+            reaParser.GetSchedule("15.27Д-ИСТ15/22б",3);
+            //vk.Connect();
             
         }
     }
