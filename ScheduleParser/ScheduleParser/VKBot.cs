@@ -67,24 +67,7 @@ namespace ScheduleParser
                                     break;
                             }
                         }
-                        if(element.Instance is Message button)
-                        {
-                            switch (button.Payload)
-                            {
-                                case "{\"button\":\"scheduleToday\"}":
-                                    api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
-                                    {
-                                        RandomId = rnd.Next(100000),
-                                        ChatId = 2,
-                                        UserId = api.UserId.Value,
-                                        Keyboard = keyboard,
-                                        Message = "button from js"
-                                    });
-                                    break;
-                            }
 
-
-                        }
                         if (element.Instance is MessageNew messageNew)
                         {
 
@@ -97,7 +80,7 @@ namespace ScheduleParser
                                     ChatId = 2,
                                     UserId = api.UserId.Value,
                                     Keyboard = keyboard,
-                                    Message = "23"
+                                    Message = "Расписание на неделю"
                                 });
                             }
                             else if (messageNew.Message.Text == "Расписание на сегодня")
