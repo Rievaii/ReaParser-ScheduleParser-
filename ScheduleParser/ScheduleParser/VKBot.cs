@@ -1,20 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using VkNet;
 using VkNet.Enums.SafetyEnums;
 using VkNet.Exception;
+using VkNet.FluentCommands.GroupBot;
 using VkNet.Model;
 using VkNet.Model.GroupUpdate;
-using VkNet.Model.RequestParams;
-using VkNet.FluentCommands.GroupBot;
 using VkNet.Model.Keyboard;
+using VkNet.Model.RequestParams;
 
 namespace ScheduleParser
 {
     internal class VKBot
     {
-        VkApi api = new VkApi();
-        Random rnd = new Random();
-        FluentGroupBotCommands commands = new FluentGroupBotCommands();
+        private VkApi api = new VkApi();
+        private Random rnd = new Random();
+        private FluentGroupBotCommands commands = new FluentGroupBotCommands();
 
         public static long _chatid = 2;
 
@@ -28,23 +29,14 @@ namespace ScheduleParser
             var settings = api.Groups.GetLongPollServer(215942977);
 
             var keyboard = new KeyboardBuilder()
-                .AddButton("Расписание на сегодня", "btnValue", KeyboardButtonColor.Positive)
+                .AddButton("Расписание на сегодня", "scheduleToday", KeyboardButtonColor.Positive)
                 .SetInline(false)
                 .SetOneTime()
                 .AddLine()
-                .AddButton("Расписание на неделю", "btnValue", KeyboardButtonColor.Primary)
-                .AddButton("Назад", "btnValue", KeyboardButtonColor.Default)
+                .AddButton("Расписание на неделю", "scheduleWeek", KeyboardButtonColor.Primary)
+                .AddButton("К выбору группы", "choosegroup", KeyboardButtonColor.Negative)
                 .Build();
 
-            //lock group on user
-            var groupkeyboard = new KeyboardBuilder()
-                .AddButton("Указать номер группы", "btnValue", KeyboardButtonColor.Primary)
-                .AddButton("Поменять свою группу", "btnValue", KeyboardButtonColor.Default)
-                .SetInline(false)
-                .AddLine()
-                .AddButton("", "btnValue", KeyboardButtonColor.Default)
-                .Build();
-            
             while (true)
             {
                 try
@@ -59,9 +51,44 @@ namespace ScheduleParser
 
                     foreach (var element in poll.Updates)
                     {
+                        if(element.Instance is MessageKeyboardButtonAction action)
+                        {
+                            switch (action.Payload)
+                            {
+                                case "{\"button\":\"scheduleToday\"}":
+                                    api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
+                                    {
+                                        RandomId = rnd.Next(100000),
+                                        ChatId = 2,
+                                        UserId = api.UserId.Value,
+                                        Keyboard = keyboard,
+                                        Message = "button from js"
+                                    });
+                                    break;
+                            }
+                        }
+                        if(element.Instance is Message button)
+                        {
+                            switch (button.Payload)
+                            {
+                                case "{\"button\":\"scheduleToday\"}":
+                                    api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
+                                    {
+                                        RandomId = rnd.Next(100000),
+                                        ChatId = 2,
+                                        UserId = api.UserId.Value,
+                                        Keyboard = keyboard,
+                                        Message = "button from js"
+                                    });
+                                    break;
+                            }
+
+
+                        }
                         if (element.Instance is MessageNew messageNew)
                         {
-                            Console.WriteLine(messageNew.Message.Text);   
+
+                            Console.WriteLine(messageNew.Message.Text);
                             if (messageNew.Message.Text == "Расписание на неделю")
                             {
                                 api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
@@ -70,10 +97,10 @@ namespace ScheduleParser
                                     ChatId = 2,
                                     UserId = api.UserId.Value,
                                     Keyboard = keyboard,
-                                    Message = "Расписание на неделю"
+                                    Message = "23"
                                 });
                             }
-                            else if (messageNew.Message.Text == "Расписание на день")
+                            else if (messageNew.Message.Text == "Расписание на сегодня")
                             {
                                 api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
                                 {
@@ -84,7 +111,7 @@ namespace ScheduleParser
                                     Message = "Расписание на день"
                                 });
                             }
-                            else
+                            else 
                             {
                                 api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
                                 {
@@ -94,8 +121,11 @@ namespace ScheduleParser
                                     Keyboard = keyboard,
                                     Message = "Расписание РЭУ"
                                 });
+                        
                             }
+                        
                         }
+
                     }
                 }
                 catch (LongPollException exception)
