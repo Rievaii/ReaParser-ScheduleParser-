@@ -8,7 +8,6 @@ using System.Threading;
 
 namespace ScheduleParser
 {
-    //TODO: method return Dictionary with <string> <string> Date - Class
     internal class ReaParser
     {
         private IWebDriver driver = new ChromeDriver();
@@ -54,7 +53,6 @@ namespace ScheduleParser
                         var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody/tr[{j}]"), 50);
 
                         Console.WriteLine(block.Text);
-                        //result.Add(i.ToString() + " " + WeekDayLabel.Text,block.Text);
                         
                         Console.WriteLine("---------------------------------------------------------------");
                     }

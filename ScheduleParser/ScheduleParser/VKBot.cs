@@ -25,7 +25,7 @@ namespace ScheduleParser
             {
                 AccessToken = "vk1.a.pE-uai9Z_ikQ0A0ZIjqbBJZhD2-uGVrNn5jhlkult4jtKhDpRq3czBEBy6FoZehh8MSvsJ4NK7_AGj6c706k6FbmzRBoTmeWsbThCgdOKZeUCaANnNlHh_GTZ_zeTojHFrbeAY6rfeibzeot3MqLGFVw4PyFhW-0msTFcANTM023Pw9Eq1gne8_KEgJQSszZ"
             });
-
+            //try this if no connection to 
             var settings = api.Groups.GetLongPollServer(215942977);
 
             var keyboard = new KeyboardBuilder()
@@ -36,7 +36,9 @@ namespace ScheduleParser
                 .AddButton("Расписание на неделю", "scheduleWeek", KeyboardButtonColor.Primary)
                 .AddButton("К выбору группы", "choosegroup", KeyboardButtonColor.Negative)
                 .Build();
+            
 
+            
             while (true)
             {
                 try
@@ -51,18 +53,41 @@ namespace ScheduleParser
 
                     foreach (var element in poll.Updates)
                     {
-                        if(element.Instance is MessageKeyboardButtonAction action)
+                        if (element.Instance is MessageNew button)
                         {
-                            switch (action.Payload)
+                            
+                            switch (button.Message.Payload)
                             {
                                 case "{\"button\":\"scheduleToday\"}":
-                                    api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
+                                    api.Messages.Send(new MessagesSendParams
                                     {
                                         RandomId = rnd.Next(100000),
                                         ChatId = 2,
                                         UserId = api.UserId.Value,
                                         Keyboard = keyboard,
-                                        Message = "button from js"
+                                        Message = "day schedule"
+                                    });
+                                    break;
+
+                                case "{\"button\":\"scheduleWeek\"}":
+                                    api.Messages.Send(new MessagesSendParams
+                                    {
+                                        RandomId = rnd.Next(100000),
+                                        ChatId = 2,
+                                        UserId = api.UserId.Value,
+                                        Keyboard = keyboard,
+                                        Message = "week schedule"
+                                    });
+                                    break;
+
+                                case "{\"button\":\"choosegroup\"}":
+                                    api.Messages.Send(new MessagesSendParams
+                                    {
+                                        RandomId = rnd.Next(100000),
+                                        ChatId = 2,
+                                        UserId = api.UserId.Value,
+                                        Keyboard = keyboard,
+                                        Message = "Choose group"
                                     });
                                     break;
                             }
@@ -94,7 +119,7 @@ namespace ScheduleParser
                                     Message = "Расписание на день"
                                 });
                             }
-                            else 
+                            else
                             {
                                 api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
                                 {
@@ -104,9 +129,9 @@ namespace ScheduleParser
                                     Keyboard = keyboard,
                                     Message = "Расписание РЭУ"
                                 });
-                        
+
                             }
-                        
+
                         }
 
                     }
