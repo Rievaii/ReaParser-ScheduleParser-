@@ -46,7 +46,7 @@ namespace ScheduleParser
                     var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/thead/tr/th/h5"), 10);
 
                     Console.WriteLine(WeekDayLabel.Text);
-                    schedule[i] = WeekDayLabel.Text;
+                    schedule.Add(WeekDayLabel.Text);
 
                     Console.WriteLine("---------------------CONSOLE OUTPUT:--------------------------");
 
@@ -56,7 +56,7 @@ namespace ScheduleParser
 
                         //Console.WriteLine(block.Text);
                         schedule.Add(block.Text);
-                        //send.message 
+                         
                         
                         Console.WriteLine("---------------------------------------------------------------");
                     }
@@ -66,7 +66,9 @@ namespace ScheduleParser
             {
                 Console.WriteLine("Нет занятий");
             }
-            
+            foreach(var element in schedule) { 
+                Console.WriteLine(element);
+                }
             Console.ReadLine();
             driver.Quit();
         }
@@ -74,7 +76,7 @@ namespace ScheduleParser
         //:Override for an exact day 
         public void GetSchedule(string _GroupId, int _WeekDay)
         {
-
+            List<string> schedule = new List<string>();
             string URL = "https://rasp.rea.ru/";
 
             string GroupId = _GroupId;
@@ -103,13 +105,15 @@ namespace ScheduleParser
 
                 Console.WriteLine("---------------------CONSOLE OUTPUT:--------------------------");
                 Console.WriteLine(WeekDayLabel.Text);
+                
 
                 for (int j = 1; j < Int32.Parse(AmountOfClasses) + 1; j++)
                 {
                     var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{_WeekDay}]/div/table/tbody/tr[{j}]"), 50);
 
                     Console.WriteLine(block.Text);
-                    //send.message
+                    
+                    
 
                     Console.WriteLine("---------------------------------------------------------------");
                 }
@@ -119,7 +123,7 @@ namespace ScheduleParser
             {
                 Console.WriteLine("Нет занятий");
             }
-
+            
             Console.ReadLine();
             driver.Quit();
         }

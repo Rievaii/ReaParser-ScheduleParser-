@@ -20,7 +20,7 @@ namespace ScheduleParser
         public static long _chatid = 2;
         private string UserGroup;
 
-        public async void Connect()
+        public void Connect()
         {
             bool groupButtonPressed = false;
             api.Authorize(new ApiAuthParams
@@ -118,13 +118,13 @@ namespace ScheduleParser
                                         ChatId = 2,
                                         UserId = api.UserId.Value,
                                         Keyboard = keyboard,
-                                        Message = "Пожалуйста введите номер вашей группы (Например: 15.27Д-ИСТ15/22б ) - "
+                                        Message = "Пожалуйста введите номер вашей группы (Например: 15.27Д-ИСТ15/22б)"
                                     });
-
                                     groupButtonPressed = true;
                                     break;
                             }
                         }
+                        //REFACTOR THIS SHIT
                         if (groupButtonPressed)
                         {
                             GetGroupNumber();
@@ -138,7 +138,8 @@ namespace ScheduleParser
                                     {
                                         if (element.Instance is MessageNew groupnumber)
                                         {
-                                            if (groupnumber.Message.Text.StartsWith("15"))
+                                            //add distant and extramural
+                                            if (groupnumber.Message.Text.StartsWith("15.") && groupnumber.Message.Text.Length < 20)
                                             {
                                                 UserGroup = groupnumber.Message.Text;
                                             }
