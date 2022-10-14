@@ -18,6 +18,7 @@ namespace ScheduleParser
         private FluentGroupBotCommands commands = new FluentGroupBotCommands();
 
         public static long _chatid = 2;
+        private string UserGroup;
 
         public async void Connect()
         {
@@ -60,25 +61,54 @@ namespace ScheduleParser
                             switch (button.Message.Payload)
                             {
                                 case "{\"button\":\"scheduleToday\"}":
-                                    api.Messages.Send(new MessagesSendParams
+                                    if(UserGroup != null)
                                     {
-                                        RandomId = rnd.Next(100000),
-                                        ChatId = 2,
-                                        UserId = api.UserId.Value,
-                                        Keyboard = keyboard,
-                                        Message = "day schedule"
-                                    });
+                                        api.Messages.Send(new MessagesSendParams
+                                        {
+                                            RandomId = rnd.Next(100000),
+                                            ChatId = 2,
+                                            UserId = api.UserId.Value,
+                                            Keyboard = keyboard,
+                                            Message = "Расписание группы " + UserGroup + " на сегодня: \n"
+                                        });
+                                    }
+                                    else
+                                    {
+                                        api.Messages.Send(new MessagesSendParams
+                                        {
+                                            RandomId = rnd.Next(100000),
+                                            ChatId = 2,
+                                            UserId = api.UserId.Value,
+                                            Keyboard = keyboard,
+                                            Message = "Пожалуйста, сначала выберите группу \n"
+                                        });
+                                    }
+                                    
                                     break;
 
                                 case "{\"button\":\"scheduleWeek\"}":
-                                    api.Messages.Send(new MessagesSendParams
+                                    if (UserGroup != null)
                                     {
-                                        RandomId = rnd.Next(100000),
-                                        ChatId = 2,
-                                        UserId = api.UserId.Value,
-                                        Keyboard = keyboard,
-                                        Message = "week schedule"
-                                    });
+                                        api.Messages.Send(new MessagesSendParams
+                                        {
+                                            RandomId = rnd.Next(100000),
+                                            ChatId = 2,
+                                            UserId = api.UserId.Value,
+                                            Keyboard = keyboard,
+                                            Message = "Расписание группы " + UserGroup + " на эту неделю: \n"
+                                        });
+                                    }
+                                    else
+                                    {
+                                        api.Messages.Send(new MessagesSendParams
+                                        {
+                                            RandomId = rnd.Next(100000),
+                                            ChatId = 2,
+                                            UserId = api.UserId.Value,
+                                            Keyboard = keyboard,
+                                            Message = "Пожалуйста, сначала выберите группу \n"
+                                        });
+                                    }
                                     break;
 
                                 case "{\"button\":\"choosegroup\"}":
@@ -87,9 +117,8 @@ namespace ScheduleParser
                                         RandomId = rnd.Next(100000),
                                         ChatId = 2,
                                         UserId = api.UserId.Value,
-                                        //parse all groups
                                         Keyboard = keyboard,
-                                        Message = "Пожалуйста введите номер вашей группы (Например: 15.27Д-ИСТ15/22б) - "
+                                        Message = "Пожалуйста введите номер вашей группы (Например: 15.27Д-ИСТ15/22б ) - "
                                     });
 
                                     groupButtonPressed = true;
@@ -101,7 +130,7 @@ namespace ScheduleParser
                             GetGroupNumber();
                             async void GetGroupNumber()
                             {
-                                string UserGroup = null;
+                                UserGroup = null;
 
                                 await Task.Run(() =>
                                 {
@@ -123,7 +152,7 @@ namespace ScheduleParser
                                     ChatId = 2,
                                     UserId = api.UserId.Value,
                                     Keyboard = keyboard,
-                                    Message = "Ваша группа " + UserGroup + "\n"
+                                    Message = "Вы выбрали " + UserGroup + " группу \n"
                                 });
 
                                 groupButtonPressed = false;
