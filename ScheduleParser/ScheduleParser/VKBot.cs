@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 using VkNet;
 using VkNet.Enums.SafetyEnums;
 using VkNet.Exception;
@@ -19,8 +19,9 @@ namespace ScheduleParser
 
         public static long _chatid = 2;
 
-        public void Connect()
+        public async void Connect()
         {
+            bool groupButtonPressed = false;
             api.Authorize(new ApiAuthParams
             {
                 AccessToken = "vk1.a.pE-uai9Z_ikQ0A0ZIjqbBJZhD2-uGVrNn5jhlkult4jtKhDpRq3czBEBy6FoZehh8MSvsJ4NK7_AGj6c706k6FbmzRBoTmeWsbThCgdOKZeUCaANnNlHh_GTZ_zeTojHFrbeAY6rfeibzeot3MqLGFVw4PyFhW-0msTFcANTM023Pw9Eq1gne8_KEgJQSszZ"
@@ -36,9 +37,9 @@ namespace ScheduleParser
                 .AddButton("Расписание на неделю", "scheduleWeek", KeyboardButtonColor.Primary)
                 .AddButton("К выбору группы", "choosegroup", KeyboardButtonColor.Negative)
                 .Build();
-            
 
-            
+
+
             while (true)
             {
                 try
@@ -55,7 +56,7 @@ namespace ScheduleParser
                     {
                         if (element.Instance is MessageNew button)
                         {
-                            
+
                             switch (button.Message.Payload)
                             {
                                 case "{\"button\":\"scheduleToday\"}":
@@ -86,40 +87,55 @@ namespace ScheduleParser
                                         RandomId = rnd.Next(100000),
                                         ChatId = 2,
                                         UserId = api.UserId.Value,
+                                        //parse all groups
                                         Keyboard = keyboard,
-                                        Message = "Choose group"
+                                        Message = "Пожалуйста введите номер вашей группы (Например: 15.27Д-ИСТ15/22б) - "
                                     });
+
+                                    groupButtonPressed = true;
                                     break;
                             }
                         }
+                        if (groupButtonPressed)
+                        {
+                            GetGroupNumber();
+                            async void GetGroupNumber()
+                            {
+                                string UserGroup = null;
 
+                                await Task.Run(() =>
+                                {
+                                    while (UserGroup == null)
+                                    {
+                                        if (element.Instance is MessageNew groupnumber)
+                                        {
+                                            if (groupnumber.Message.Text.StartsWith("15"))
+                                            {
+                                                UserGroup = groupnumber.Message.Text;
+                                            }
+                                        }
+                                    }
+                                });
+
+                                api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
+                                {
+                                    RandomId = rnd.Next(100000),
+                                    ChatId = 2,
+                                    UserId = api.UserId.Value,
+                                    Keyboard = keyboard,
+                                    Message = "Ваша группа " + UserGroup + "\n"
+                                });
+
+                                groupButtonPressed = false;
+
+                            }
+                        }
                         if (element.Instance is MessageNew messageNew)
                         {
 
                             Console.WriteLine(messageNew.Message.Text);
-                            if (messageNew.Message.Text == "Расписание на неделю")
-                            {
-                                api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
-                                {
-                                    RandomId = rnd.Next(100000),
-                                    ChatId = 2,
-                                    UserId = api.UserId.Value,
-                                    Keyboard = keyboard,
-                                    Message = "Расписание на неделю"
-                                });
-                            }
-                            else if (messageNew.Message.Text == "Расписание на сегодня")
-                            {
-                                api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
-                                {
-                                    RandomId = rnd.Next(100000),
-                                    ChatId = 2,
-                                    UserId = api.UserId.Value,
-                                    Keyboard = keyboard,
-                                    Message = "Расписание на день"
-                                });
-                            }
-                            else
+
+                            if (messageNew.Message.Text == "Начать")
                             {
                                 api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
                                 {
@@ -129,9 +145,7 @@ namespace ScheduleParser
                                     Keyboard = keyboard,
                                     Message = "Расписание РЭУ"
                                 });
-
                             }
-
                         }
 
                     }

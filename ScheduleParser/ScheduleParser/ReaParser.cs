@@ -16,7 +16,7 @@ namespace ScheduleParser
         //get schedule for the week
         public void GetSchedule(string _GroupId)
         {
-
+            List <string> schedule = new List<string> ();                                                                     
             string URL = "https://rasp.rea.ru/";
 
             string GroupId = _GroupId;
@@ -46,13 +46,17 @@ namespace ScheduleParser
                     var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/thead/tr/th/h5"), 10);
 
                     Console.WriteLine(WeekDayLabel.Text);
+                    schedule[i] = WeekDayLabel.Text;
+
                     Console.WriteLine("---------------------CONSOLE OUTPUT:--------------------------");
 
                     for (int j = 1; j < Int32.Parse(AmountOfClasses) + 1; j++)
                     {
                         var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody/tr[{j}]"), 50);
 
-                        Console.WriteLine(block.Text);
+                        //Console.WriteLine(block.Text);
+                        schedule.Add(block.Text);
+                        //send.message 
                         
                         Console.WriteLine("---------------------------------------------------------------");
                     }
@@ -105,6 +109,7 @@ namespace ScheduleParser
                     var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{_WeekDay}]/div/table/tbody/tr[{j}]"), 50);
 
                     Console.WriteLine(block.Text);
+                    //send.message
 
                     Console.WriteLine("---------------------------------------------------------------");
                 }
@@ -128,11 +133,14 @@ namespace ScheduleParser
                 if (timeoutInSeconds > 0)
                 {
                     var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
-                    return wait.Until(drv => drv.FindElement(by));
+                    return wait.Until(drv => drv.FindElement(by)); 
                 }
-            }catch (Exception ex) { Console.WriteLine("Невозможно обнаружить элемент"); }                    
+            }catch(OpenQA.Selenium.NoSuchElementException ex)
+            //message send
+            { Console.WriteLine("Невозможно обнаружить элемент"); }                    
             return driver.FindElement(by);
         }
     }
+    
 }
 
