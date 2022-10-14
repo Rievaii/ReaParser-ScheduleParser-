@@ -6,3 +6,6 @@ TODO:/
 4) beauty of schedule output 
 5) no internet connection exception 
 6) link group number to user
+7) choose group by finding from the array reu.rasp
+8) send exceptions from rea parser to vk.send message?!
+9) 
