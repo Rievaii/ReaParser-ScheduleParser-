@@ -5,18 +5,20 @@ using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ScheduleParser
 {
     internal class ReaParser
     {
         private IWebDriver driver = new ChromeDriver();
-        
-        //make it async
-        //get schedule for the week
+
         public void GetSchedule(string _GroupId)
         {
-            List <string> schedule = new List<string> ();                                                                     
+            Dictionary<string, List<string>> WeekSchedule = new Dictionary<string, List<string>>();
+
+            List<string> Classes = new List<string>();
+
             string URL = "https://rasp.rea.ru/";
 
             string GroupId = _GroupId;
@@ -34,98 +36,38 @@ namespace ScheduleParser
                 IWebElement search = driver.FindElement(By.Id("manual-search-btn"));
                 search.Click();
             }
-            catch (Exception) { Console.WriteLine("Unable to get to the website"); }
+            catch (Exception) { Console.WriteLine("\n Unable to get to the website \n"); }
 
             Thread.Sleep(2000);
 
-            try
+            for (int i = 1; i < 6; i++)
             {
-                for (int i = 1; i < 6; i++)
+                var AmountOfClasses = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody"), 10).GetAttribute("childElementCount");
+                var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/thead/tr/th/h5"), 10);
+
+
+
+                var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody"), 50);
+                Classes.Add(block.Text);
+
+                /*for (int j = 1; j < Int32.Parse(AmountOfClasses) + 1; j++)
                 {
-                    var AmountOfClasses = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody"), 10).GetAttribute("childElementCount");
-                    var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/thead/tr/th/h5"), 10);
+                    var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody/tr[{j}]"), 50);
 
-                    Console.WriteLine(WeekDayLabel.Text);
-                    schedule.Add(WeekDayLabel.Text);
-
-                    Console.WriteLine("---------------------CONSOLE OUTPUT:--------------------------");
-
-                    for (int j = 1; j < Int32.Parse(AmountOfClasses) + 1; j++)
-                    {
-                        var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody/tr[{j}]"), 50);
-
-                        //Console.WriteLine(block.Text);
-                        schedule.Add(block.Text);
-                         
-                        
-                        Console.WriteLine("---------------------------------------------------------------");
-                    }
-                }
-            }
-            catch (OpenQA.Selenium.NoSuchElementException)
-            {
-                Console.WriteLine("Нет занятий");
-            }
-            foreach(var element in schedule) { 
-                Console.WriteLine(element);
-                }
-            Console.ReadLine();
-            driver.Quit();
-        }
-
-        //:Override for an exact day 
-        public void GetSchedule(string _GroupId, int _WeekDay)
-        {
-            List<string> schedule = new List<string>();
-            string URL = "https://rasp.rea.ru/";
-
-            string GroupId = _GroupId;
-
-            var web = new HtmlWeb();
-
-            try
-            {
-                driver.Navigate().GoToUrl(URL);
-
-                IWebElement input = driver.FindElement(By.CssSelector("#search"));
-                input.Click();
-
-                input.SendKeys(GroupId);
-                IWebElement search = driver.FindElement(By.Id("manual-search-btn"));
-                search.Click();
-            }
-            catch (Exception) { Console.WriteLine("Unable to get to the website"); }
-
-            Thread.Sleep(2000);
-
-            try
-            {
-                var AmountOfClasses = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{_WeekDay}]/div/table/tbody"), 10).GetAttribute("childElementCount");
-                var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{_WeekDay}]/div/table/thead/tr/th/h5"), 10);
-
-                Console.WriteLine("---------------------CONSOLE OUTPUT:--------------------------");
-                Console.WriteLine(WeekDayLabel.Text);
-                
-
-                for (int j = 1; j < Int32.Parse(AmountOfClasses) + 1; j++)
-                {
-                    var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{_WeekDay}]/div/table/tbody/tr[{j}]"), 50);
-
-                    Console.WriteLine(block.Text);
+                    Classes.Add(block.Text);
                     
                     
+                }*/
 
-                    Console.WriteLine("---------------------------------------------------------------");
-                }
-
+                WeekSchedule.Add(,Classes);
             }
-            catch (OpenQA.Selenium.NoSuchElementException)
+            foreach (KeyValuePair<string, List<string>> kvp in WeekSchedule)
             {
-                Console.WriteLine("Нет занятий");
+                foreach (string value in kvp.Value)
+                {
+                    Console.WriteLine("Расписание на = {0}, \n {1} \n", kvp.Key, value);
+                }
             }
-            
-            Console.ReadLine();
-            driver.Quit();
         }
     }
     public static class WebDriverExtensions
@@ -137,14 +79,13 @@ namespace ScheduleParser
                 if (timeoutInSeconds > 0)
                 {
                     var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
-                    return wait.Until(drv => drv.FindElement(by)); 
+                    return wait.Until(drv => drv.FindElement(by));
                 }
-            }catch(OpenQA.Selenium.NoSuchElementException ex)
-            //message send
-            { Console.WriteLine("Невозможно обнаружить элемент"); }                    
+            }
+            catch (OpenQA.Selenium.NoSuchElementException)
+            { Console.WriteLine("Невозможно обнаружить элемент"); }
             return driver.FindElement(by);
         }
     }
-    
 }
 

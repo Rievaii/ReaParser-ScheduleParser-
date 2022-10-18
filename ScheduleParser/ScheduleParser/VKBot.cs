@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using VkNet;
 using VkNet.Enums.SafetyEnums;
@@ -15,7 +16,7 @@ namespace ScheduleParser
     {
         private VkApi api = new VkApi();
         private Random rnd = new Random();
-        private FluentGroupBotCommands commands = new FluentGroupBotCommands();
+        private ReaParser parser = new ReaParser(); 
 
         public static long _chatid = 2;
         private string UserGroup;
@@ -66,18 +67,19 @@ namespace ScheduleParser
                                         api.Messages.Send(new MessagesSendParams
                                         {
                                             RandomId = rnd.Next(100000),
-                                            ChatId = 2,
+                                            ChatId = _chatid,
                                             UserId = api.UserId.Value,
                                             Keyboard = keyboard,
                                             Message = "Расписание группы " + UserGroup + " на сегодня: \n"
                                         });
+                                        
                                     }
                                     else
                                     {
                                         api.Messages.Send(new MessagesSendParams
                                         {
                                             RandomId = rnd.Next(100000),
-                                            ChatId = 2,
+                                            ChatId = _chatid,
                                             UserId = api.UserId.Value,
                                             Keyboard = keyboard,
                                             Message = "Пожалуйста, сначала выберите группу \n"
@@ -92,7 +94,7 @@ namespace ScheduleParser
                                         api.Messages.Send(new MessagesSendParams
                                         {
                                             RandomId = rnd.Next(100000),
-                                            ChatId = 2,
+                                            ChatId = _chatid,
                                             UserId = api.UserId.Value,
                                             Keyboard = keyboard,
                                             Message = "Расписание группы " + UserGroup + " на эту неделю: \n"
@@ -103,7 +105,7 @@ namespace ScheduleParser
                                         api.Messages.Send(new MessagesSendParams
                                         {
                                             RandomId = rnd.Next(100000),
-                                            ChatId = 2,
+                                            ChatId = _chatid,
                                             UserId = api.UserId.Value,
                                             Keyboard = keyboard,
                                             Message = "Пожалуйста, сначала выберите группу \n"
@@ -115,7 +117,7 @@ namespace ScheduleParser
                                     api.Messages.Send(new MessagesSendParams
                                     {
                                         RandomId = rnd.Next(100000),
-                                        ChatId = 2,
+                                        ChatId = _chatid,
                                         UserId = api.UserId.Value,
                                         Keyboard = keyboard,
                                         Message = "Пожалуйста введите номер вашей группы (Например: 15.27Д-ИСТ15/22б)"
@@ -124,7 +126,6 @@ namespace ScheduleParser
                                     break;
                             }
                         }
-                        //REFACTOR THIS SHIT
                         if (groupButtonPressed)
                         {
                             GetGroupNumber();
@@ -150,7 +151,7 @@ namespace ScheduleParser
                                 api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
                                 {
                                     RandomId = rnd.Next(100000),
-                                    ChatId = 2,
+                                    ChatId = _chatid,
                                     UserId = api.UserId.Value,
                                     Keyboard = keyboard,
                                     Message = "Вы выбрали " + UserGroup + " группу \n"
@@ -170,14 +171,13 @@ namespace ScheduleParser
                                 api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
                                 {
                                     RandomId = rnd.Next(100000),
-                                    ChatId = 2,
+                                    ChatId = _chatid,
                                     UserId = api.UserId.Value,
                                     Keyboard = keyboard,
                                     Message = "Расписание РЭУ"
                                 });
                             }
                         }
-
                     }
                 }
                 catch (LongPollException exception)
