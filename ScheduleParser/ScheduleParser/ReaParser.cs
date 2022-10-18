@@ -5,7 +5,6 @@ using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ScheduleParser
 {
@@ -18,7 +17,6 @@ namespace ScheduleParser
         List<string> Classes = new List<string>();
 
         string URL = "https://rasp.rea.ru/";
-
 
         public void GetSchedule(string _GroupId)
         {
@@ -46,16 +44,21 @@ namespace ScheduleParser
                 var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/thead/tr/th/h5"), 10);
                 var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody"), 50);
 
-                Classes.Add(block.Text);
-                WeekSchedule.Add(WeekDayLabel.Text, Classes);
+                Classes.Add("\n Расписание на : \n"+WeekDayLabel.Text +"\n"+ block.Text+"\n");
+                //WeekSchedule.Add(WeekDayLabel.Text, Classes);
             }
-            //delete
+
+            /*
             foreach (KeyValuePair<string, List<string>> kvp in WeekSchedule)
             {
                 foreach (string value in kvp.Value)
                 {
                     Console.WriteLine("Расписание на = {0}, \n {1} \n", kvp.Key, value);
                 }
+            }*/
+            foreach(var element in Classes)
+            {
+                Console.Write(element); 
             }
         }
     }
