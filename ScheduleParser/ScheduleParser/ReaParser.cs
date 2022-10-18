@@ -13,17 +13,18 @@ namespace ScheduleParser
     {
         private IWebDriver driver = new ChromeDriver();
 
+        Dictionary<string, List<string>> WeekSchedule = new Dictionary<string, List<string>>();
+
+        List<string> Classes = new List<string>();
+
+        string URL = "https://rasp.rea.ru/";
+
+
         public void GetSchedule(string _GroupId)
         {
-            Dictionary<string, List<string>> WeekSchedule = new Dictionary<string, List<string>>();
-
-            List<string> Classes = new List<string>();
-
-            string URL = "https://rasp.rea.ru/";
+            var web = new HtmlWeb();
 
             string GroupId = _GroupId;
-
-            var web = new HtmlWeb();
 
             try
             {
@@ -42,25 +43,13 @@ namespace ScheduleParser
 
             for (int i = 1; i < 6; i++)
             {
-                var AmountOfClasses = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody"), 10).GetAttribute("childElementCount");
                 var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/thead/tr/th/h5"), 10);
-
-
-
                 var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody"), 50);
+
                 Classes.Add(block.Text);
-
-                /*for (int j = 1; j < Int32.Parse(AmountOfClasses) + 1; j++)
-                {
-                    var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody/tr[{j}]"), 50);
-
-                    Classes.Add(block.Text);
-                    
-                    
-                }*/
-
-                WeekSchedule.Add(,Classes);
+                WeekSchedule.Add(WeekDayLabel.Text, Classes);
             }
+            //delete
             foreach (KeyValuePair<string, List<string>> kvp in WeekSchedule)
             {
                 foreach (string value in kvp.Value)
