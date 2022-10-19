@@ -10,9 +10,12 @@ namespace ScheduleParser
             ReaParser reaParser = new ReaParser();
             VKBot vk = new VKBot();
 
-            //vk.Connect();
+            vk.Connect();
 
-            reaParser.GetSchedule("15.27Д-ИСТ15/22б");
+            foreach(var element in reaParser.GetWeekSchedule("15.27Д-ИСТ15/22б"))
+            {
+                Console.WriteLine(element); 
+            }
         }
     }
 }

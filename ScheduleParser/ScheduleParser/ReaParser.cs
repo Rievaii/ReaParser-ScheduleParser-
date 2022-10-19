@@ -1,29 +1,25 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ScheduleParser
 {
     internal class ReaParser
     {
         private IWebDriver driver = new ChromeDriver();
+        private Dictionary<string, List<string>> WeekSchedule = new Dictionary<string, List<string>>();
+        private List<string> Classes = new List<string>();
+        private string URL = "https://rasp.rea.ru/";
 
-        Dictionary<string, List<string>> WeekSchedule = new Dictionary<string, List<string>>();
-
-        List<string> Classes = new List<string>();
-
-        string URL = "https://rasp.rea.ru/";
-
-        public void GetSchedule(string _GroupId)
+        public List<string> RunParser(string _GroupId)
         {
-            var web = new HtmlWeb();
-
             string GroupId = _GroupId;
-
+            string currentwindow = driver.CurrentWindowHandle;
+            
             try
             {
                 driver.Navigate().GoToUrl(URL);
@@ -44,22 +40,14 @@ namespace ScheduleParser
                 var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/thead/tr/th/h5"), 10);
                 var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody"), 50);
 
-                Classes.Add("\n Расписание на : \n"+WeekDayLabel.Text +"\n"+ block.Text+"\n");
-                //WeekSchedule.Add(WeekDayLabel.Text, Classes);
+                Classes.Add("\n Расписание на : \n" + WeekDayLabel.Text + "\n" + block.Text + "\n");
             }
+            return Classes;
+        }
 
-            /*
-            foreach (KeyValuePair<string, List<string>> kvp in WeekSchedule)
-            {
-                foreach (string value in kvp.Value)
-                {
-                    Console.WriteLine("Расписание на = {0}, \n {1} \n", kvp.Key, value);
-                }
-            }*/
-            foreach(var element in Classes)
-            {
-                Console.Write(element); 
-            }
+        public List<string> GetWeekSchedule(string UserGroup)
+        {
+            return RunParser(UserGroup);
         }
     }
     public static class WebDriverExtensions
@@ -74,10 +62,11 @@ namespace ScheduleParser
                     return wait.Until(drv => drv.FindElement(by));
                 }
             }
-            catch (OpenQA.Selenium.NoSuchElementException)
+            catch (NoSuchElementException)
             { Console.WriteLine("Невозможно обнаружить элемент"); }
             return driver.FindElement(by);
         }
     }
+
 }
 
