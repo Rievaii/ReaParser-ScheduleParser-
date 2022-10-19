@@ -39,11 +39,7 @@ namespace ScheduleParser
                 var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/thead/tr/th/h5"), 10);
                 var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody"), 50);
                 
-                string CurrentBlock = block.Text;
-
-                CurrentBlock.Insert(CurrentBlock.IndexOf("пара") + 1, "____________________________");
-
-                Classes.Add("\n"+WeekDayLabel.Text + "\n" + CurrentBlock + "\n");
+                Classes.Add("\n"+WeekDayLabel.Text + "\n"+ block.GetAttribute("innerText"));
             }
             return Classes;
         }
