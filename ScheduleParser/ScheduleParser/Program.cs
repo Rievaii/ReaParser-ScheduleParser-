@@ -12,10 +12,6 @@ namespace ScheduleParser
 
             vk.Connect();
 
-            foreach(var element in reaParser.GetWeekSchedule("15.27Д-ИСТ15/22б"))
-            {
-                Console.WriteLine(element); 
-            }
         }
     }
 }

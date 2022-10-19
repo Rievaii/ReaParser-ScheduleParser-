@@ -71,7 +71,6 @@ namespace ScheduleParser
                                             Keyboard = keyboard,
                                             Message = "Расписание группы " + UserGroup + " на сегодня: \n"
                                         });
-                                        
                                     }
                                     else
                                     {
