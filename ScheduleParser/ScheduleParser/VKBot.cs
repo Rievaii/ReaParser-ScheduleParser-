@@ -16,7 +16,8 @@ namespace ScheduleParser
     {
         private VkApi api = new VkApi();
         private Random rnd = new Random();
-        private ReaParser parser = new ReaParser(); 
+        private ReaParser parser = new ReaParser();
+        DateTime ClockInfoFromSystem = DateTime.Now;
 
         public static long _chatid = 2;
         private string UserGroup;
@@ -71,6 +72,32 @@ namespace ScheduleParser
                                             Keyboard = keyboard,
                                             Message = "Расписание группы " + UserGroup + " на сегодня: \n"
                                         });
+                                        var Today = (int)(ClockInfoFromSystem.DayOfWeek + 6) % 7;
+
+                                        if (Today < 7)
+                                        {
+        
+                                                api.Messages.Send(new MessagesSendParams
+                                                {
+                                                    RandomId = rnd.Next(100000),
+                                                    ChatId = _chatid,
+                                                    UserId = api.UserId.Value,
+                                                    Keyboard = keyboard,
+                                                    Message = parser.GetWeekSchedule(UserGroup)[Today]
+                                                });
+                                        }
+                                        else
+                                        {
+                                            api.Messages.Send(new MessagesSendParams
+                                            {
+                                                RandomId = rnd.Next(100000),
+                                                ChatId = _chatid,
+                                                UserId = api.UserId.Value,
+                                                Keyboard = keyboard,
+                                                Message = "Сегодня занятий нет\n"
+                                            });
+                                        }
+
                                     }
                                     else
                                     {
@@ -148,23 +175,24 @@ namespace ScheduleParser
                                     {
                                         if (element.Instance is MessageNew groupnumber)
                                         {
-                                            //add distant and extramural
+                                            //add distant and extramural prefixes
                                             if (groupnumber.Message.Text.StartsWith("15.") && groupnumber.Message.Text.Length < 20)
                                             {
                                                 UserGroup = groupnumber.Message.Text;
                                             }
                                         }
                                     }
+                                    api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
+                                    {
+                                        RandomId = rnd.Next(100000),
+                                        ChatId = _chatid,
+                                        UserId = api.UserId.Value,
+                                        Keyboard = keyboard,
+                                        Message = "Вы выбрали " + UserGroup + " группу \n"
+                                    });
                                 });
 
-                                api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
-                                {
-                                    RandomId = rnd.Next(100000),
-                                    ChatId = _chatid,
-                                    UserId = api.UserId.Value,
-                                    Keyboard = keyboard,
-                                    Message = "Вы выбрали " + UserGroup + " группу \n"
-                                });
+                                
 
                                 groupButtonPressed = false;
 
