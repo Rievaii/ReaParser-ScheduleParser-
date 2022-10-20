@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using VkNet;
 using VkNet.Enums.SafetyEnums;
 using VkNet.Exception;
-using VkNet.FluentCommands.GroupBot;
 using VkNet.Model;
 using VkNet.Model.GroupUpdate;
 using VkNet.Model.Keyboard;
@@ -17,7 +15,7 @@ namespace ScheduleParser
         private VkApi api = new VkApi();
         private Random rnd = new Random();
         private ReaParser parser = new ReaParser();
-        DateTime ClockInfoFromSystem = DateTime.Now;
+        private DateTime ClockInfoFromSystem = DateTime.Now;
 
         public static long _chatid = 2;
         private string UserGroup;
@@ -58,11 +56,10 @@ namespace ScheduleParser
                     {
                         if (element.Instance is MessageNew button)
                         {
-
                             switch (button.Message.Payload)
                             {
                                 case "{\"button\":\"scheduleToday\"}":
-                                    if(UserGroup != null)
+                                    if (UserGroup != null)
                                     {
                                         api.Messages.Send(new MessagesSendParams
                                         {
@@ -74,19 +71,7 @@ namespace ScheduleParser
                                         });
                                         var Today = (int)(ClockInfoFromSystem.DayOfWeek + 6) % 7;
 
-                                        if (Today < 7)
-                                        {
-        
-                                                api.Messages.Send(new MessagesSendParams
-                                                {
-                                                    RandomId = rnd.Next(100000),
-                                                    ChatId = _chatid,
-                                                    UserId = api.UserId.Value,
-                                                    Keyboard = keyboard,
-                                                    Message = parser.GetWeekSchedule(UserGroup)[Today]
-                                                });
-                                        }
-                                        else
+                                        foreach (var DaySchedule in parser.GetDaySchedule(UserGroup,Today))
                                         {
                                             api.Messages.Send(new MessagesSendParams
                                             {
@@ -94,10 +79,10 @@ namespace ScheduleParser
                                                 ChatId = _chatid,
                                                 UserId = api.UserId.Value,
                                                 Keyboard = keyboard,
-                                                Message = "Сегодня занятий нет\n"
+                                                Message = DaySchedule
                                             });
                                         }
-
+                                        parser.ClearDaySchedule();
                                     }
                                     else
                                     {
@@ -110,7 +95,6 @@ namespace ScheduleParser
                                             Message = "Пожалуйста, сначала выберите группу \n"
                                         });
                                     }
-                                    
                                     break;
 
                                 case "{\"button\":\"scheduleWeek\"}":
@@ -124,7 +108,7 @@ namespace ScheduleParser
                                             Keyboard = keyboard,
                                             Message = "Расписание группы " + UserGroup + " на эту неделю: \n"
                                         });
-                                        foreach(var DaySchedule in parser.GetWeekSchedule(UserGroup))
+                                        foreach (var WeekSchedule in parser.GetWeekSchedule(UserGroup))
                                         {
                                             api.Messages.Send(new MessagesSendParams
                                             {
@@ -132,9 +116,10 @@ namespace ScheduleParser
                                                 ChatId = _chatid,
                                                 UserId = api.UserId.Value,
                                                 Keyboard = keyboard,
-                                                Message = DaySchedule
+                                                Message = WeekSchedule
                                             });
                                         }
+                                        parser.ClearWeekSchedule();
                                     }
                                     else
                                     {
@@ -182,6 +167,11 @@ namespace ScheduleParser
                                             }
                                         }
                                     }
+                                });
+
+
+                                if (UserGroup != null)
+                                {
                                     api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
                                     {
                                         RandomId = rnd.Next(100000),
@@ -190,17 +180,12 @@ namespace ScheduleParser
                                         Keyboard = keyboard,
                                         Message = "Вы выбрали " + UserGroup + " группу \n"
                                     });
-                                });
-
-                                
-
+                                }
                                 groupButtonPressed = false;
-
                             }
                         }
                         if (element.Instance is MessageNew messageNew)
                         {
-
                             Console.WriteLine(messageNew.Message.Text);
 
                             if (messageNew.Message.Text == "Начать")
