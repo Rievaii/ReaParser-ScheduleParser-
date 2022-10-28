@@ -14,7 +14,7 @@ namespace ScheduleParser
         private List<string> DayClasses = new List<string>();
         private string URL = "https://rasp.rea.ru/";
 
-        //GetWeekSchedule
+        
         private List<string> RunParser(string _GroupId)
         {
             string GroupId = _GroupId;
@@ -33,12 +33,14 @@ namespace ScheduleParser
             catch (Exception) { Console.WriteLine("\n Unable to get to the website \n"); }
 
             Thread.Sleep(2000);
-            //bug: week schedule doubles, triples, e.t.c mb run another method
+
             for (int i = 1; i < 6; i++)
             {
-                var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/thead/tr/th/h5"), 10);
-                var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody"), 50);
-                
+                var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/thead/tr/th/h5"));
+                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+                var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody"));
+                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(50);
+
                 WeekClasses.Add("\n"+WeekDayLabel.Text + "\n"+ block.GetAttribute("innerText"));
             }
             return WeekClasses;
@@ -65,8 +67,10 @@ namespace ScheduleParser
 
             if (ExactDay < 6 )
             {
-                var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{ExactDay}]/div/table/thead/tr/th/h5"), 10);
-                var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{ExactDay}]/div/table/tbody"), 50);
+                var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{ExactDay}]/div/table/thead/tr/th/h5"));
+                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+                var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{ExactDay}]/div/table/tbody"));
+                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(50);
 
                 DayClasses.Add("\n" + WeekDayLabel.Text + "\n" + block.GetAttribute("innerText"));
             }
@@ -92,25 +96,9 @@ namespace ScheduleParser
         {
             DayClasses.Clear();
         }
-        
+        //bug with group choose still multiplies values with group numbers
     }
-    public static class WebDriverExtensions
-    {
-        public static IWebElement FindElement(this IWebDriver driver, By by, int timeoutInSeconds)
-        {
-            try
-            {
-                if (timeoutInSeconds > 0)
-                {
-                    var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
-                    return wait.Until(drv => drv.FindElement(by));
-                }
-            }
-            catch (NoSuchElementException)
-            { Console.WriteLine("Невозможно обнаружить элемент"); }
-            return driver.FindElement(by);
-        }
-    }
+    
 
 }
 
