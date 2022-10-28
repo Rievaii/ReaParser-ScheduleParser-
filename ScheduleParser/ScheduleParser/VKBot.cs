@@ -71,7 +71,7 @@ namespace ScheduleParser
                                         });
                                         var Today = (int)(ClockInfoFromSystem.DayOfWeek + 6) % 7;
 
-                                        foreach (var DaySchedule in parser.GetDaySchedule(UserGroup,Today))
+                                        foreach (var DaySchedule in parser.GetDaySchedule(UserGroup,Today+1))
                                         {
                                             api.Messages.Send(new MessagesSendParams
                                             {
