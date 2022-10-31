@@ -96,9 +96,6 @@ namespace ScheduleParser
         {
             DayClasses.Clear();
         }
-        //bug with group choose still multiplies values with group numbers
     }
-    
-
 }
 

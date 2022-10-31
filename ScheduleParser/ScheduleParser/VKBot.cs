@@ -31,6 +31,7 @@ namespace ScheduleParser
 
             var settings = api.Groups.GetLongPollServer(215942977);
 
+            //add GroupManagerKeyboard
             var keyboard = new KeyboardBuilder()
                 .AddButton("Расписание на сегодня", "scheduleToday", KeyboardButtonColor.Positive)
                 .SetInline(false)
@@ -140,7 +141,6 @@ namespace ScheduleParser
                                         RandomId = rnd.Next(100000),
                                         ChatId = _chatid,
                                         UserId = api.UserId.Value,
-                                        Keyboard = keyboard,
                                         Message = "Пожалуйста введите номер вашей группы (Например: 15.27Д-ИСТ15/22б)"
                                     });
                                     groupButtonPressed = true;
@@ -167,21 +167,19 @@ namespace ScheduleParser
                                             }
                                         }
                                     }
-                                });
-
-                                //move it to GetGroupNumber;
-                                if (UserGroup != null)
-                                {
-                                    api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
+                                    if (UserGroup != null)
                                     {
-                                        RandomId = rnd.Next(100000),
-                                        ChatId = _chatid,
-                                        UserId = api.UserId.Value,
-                                        Keyboard = keyboard,
-                                        Message = "Вы выбрали " + UserGroup + " группу \n"
-                                    });
-                                }
-                                groupButtonPressed = false;
+                                        api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
+                                        {
+                                            RandomId = rnd.Next(100000),
+                                            ChatId = _chatid,
+                                            UserId = api.UserId.Value,
+                                            Keyboard = keyboard,
+                                            Message = "Вы выбрали " + UserGroup + " группу \n"
+                                        });
+                                    }
+                                    groupButtonPressed = false;
+                                });                              
                             }
                         }
                         if (element.Instance is MessageNew messageNew)
@@ -190,6 +188,7 @@ namespace ScheduleParser
 
                             if (messageNew.Message.Text == "Начать")
                             {
+                                //throw GroupManagerKeyboard
                                 api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
                                 {
                                     RandomId = rnd.Next(100000),
