@@ -169,7 +169,7 @@ namespace ScheduleParser
                                     }
                                 });
 
-
+                                //move it to GetGroupNumber;
                                 if (UserGroup != null)
                                 {
                                     api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams

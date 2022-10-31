@@ -7,7 +7,6 @@ namespace ScheduleParser
         private static void Main(string[] args)
         {
             //15.27Д-ИСТ15/22б
-            ReaParser reaParser = new ReaParser();
             VKBot vk = new VKBot();
 
             vk.Connect();
