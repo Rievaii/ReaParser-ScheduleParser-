@@ -182,6 +182,18 @@ namespace ScheduleParser
                                 });                              
                             }
                         }
+                        if (parser.UnableToGetToWebSite)
+                        {
+                            api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
+                            {
+                                RandomId = rnd.Next(100000),
+                                ChatId = _chatid,
+                                UserId = api.UserId.Value,
+                                Keyboard = keyboard,
+                                Message = "Ошибка: невозможно получить расписание указанной группы"
+                            });
+                            parser.UnableToGetToWebSite = false;
+                        }
                         if (element.Instance is MessageNew messageNew)
                         {
                             Console.WriteLine(messageNew.Message.Text);
