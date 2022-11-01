@@ -14,7 +14,6 @@ namespace ScheduleParser
         private string URL = "https://rasp.rea.ru/";
         public bool UnableToGetToWebSite { get; set; }
 
-
         private List<string> RunParser(string _GroupId)
         {
             string GroupId = _GroupId;

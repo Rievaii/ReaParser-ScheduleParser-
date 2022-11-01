@@ -40,7 +40,14 @@ namespace ScheduleParser
                 .AddButton("Расписание на неделю", "scheduleWeek", KeyboardButtonColor.Primary)
                 .AddButton("К выбору группы", "choosegroup", KeyboardButtonColor.Negative)
                 .Build();
-
+            
+            var GroupManagerKeyboard = new KeyboardBuilder()
+                .AddButton("Выбрать группу", "choosegroup", KeyboardButtonColor.Primary)
+                .SetInline(false)
+                .SetOneTime()
+                .AddLine()
+                .Build();
+            
             while (true)
             {
                 try
@@ -200,13 +207,12 @@ namespace ScheduleParser
 
                             if (messageNew.Message.Text == "Начать")
                             {
-                                //throw GroupManagerKeyboard
                                 api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
                                 {
                                     RandomId = rnd.Next(100000),
                                     ChatId = _chatid,
                                     UserId = api.UserId.Value,
-                                    Keyboard = keyboard,
+                                    Keyboard = GroupManagerKeyboard,
                                     Message = "Расписание РЭУ"
                                 });
                             }
