@@ -31,7 +31,6 @@ namespace ScheduleParser
 
             var settings = api.Groups.GetLongPollServer(215942977);
 
-            //add GroupManagerKeyboard
             var keyboard = new KeyboardBuilder()
                 .AddButton("Расписание на сегодня", "scheduleToday", KeyboardButtonColor.Positive)
                 .SetInline(false)
@@ -48,6 +47,7 @@ namespace ScheduleParser
                 .AddLine()
                 .Build();
             
+            //bot event handler
             while (true)
             {
                 try
