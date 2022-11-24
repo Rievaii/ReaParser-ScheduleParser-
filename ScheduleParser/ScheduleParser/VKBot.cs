@@ -19,6 +19,7 @@ namespace ScheduleParser
 
         public static long _chatid = 2;
         private string UserGroup;
+        private long UserId;
 
         public void Connect()
         {
@@ -170,6 +171,7 @@ namespace ScheduleParser
                                             //add distant and extramural prefixes
                                             if (groupnumber.Message.Text.StartsWith("15.") && groupnumber.Message.Text.Length < 20)
                                             {
+                                                UserId = (long)groupnumber.Message.FromId;
                                                 UserGroup = groupnumber.Message.Text;
                                             }
                                         }
@@ -182,7 +184,7 @@ namespace ScheduleParser
                                             ChatId = _chatid,
                                             UserId = api.UserId.Value,
                                             Keyboard = keyboard,
-                                            Message = "Вы выбрали " + UserGroup + " группу \n"
+                                            Message = UserId+ "Вы выбрали " + UserGroup + " группу \n"
                                         });
                                     }
                                     groupButtonPressed = false;
