@@ -8,4 +8,4 @@ TODO:/
 6) link group number to user/ get user id 
 7) choose group by finding from the array reu.rasp - not actual 
 8) send exceptions from rea parser to vk.send message - check
-9) 
+9) assign data with sql db
