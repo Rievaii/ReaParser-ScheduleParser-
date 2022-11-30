@@ -169,6 +169,7 @@ namespace ScheduleParser
                                         if (element.Instance is MessageNew groupnumber)
                                         {
                                             //add distant and extramural prefixes
+                                            //bug is still exists 15.any number
                                             if (groupnumber.Message.Text.StartsWith("15.") && groupnumber.Message.Text.Length < 20)
                                             {
                                                 UserGroup = groupnumber.Message.Text;

@@ -6,9 +6,12 @@ namespace ScheduleParser
     {
         private static void Main(string[] args)
         {
-            VKBot vk = new VKBot();
 
-            vk.Connect();
+            Database database = new Database();
+            database.CheckUser("123");
+            //VKBot vk = new VKBot();
+
+            //vk.Connect();
 
         }
     }

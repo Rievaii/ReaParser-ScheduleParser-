@@ -1,22 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
+using System;
 
 namespace ScheduleParser
 {
     internal class Database
-    {
+    { 
         public bool CheckUser(string UserId)
         {
-            using (var connection = new SqliteConnection("Data Source=usersdata.db"))
+            using (var connection = new SqliteConnection("Data Source= schedulebot.db"))
             {
                 connection.Open();
+
+                SqliteCommand command = new SqliteCommand($"SELECT * FROM users WHERE UserId = '{UserId}'", connection);
+                using (SqliteDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.HasRows) // data gained
+                    {
+                        while (reader.Read())   // read data
+                        {
+                            var id = reader.GetValue(0);
+                            var UId = reader.GetValue(1);
+                            var UserGroup = reader.GetValue(2);
+                            Console.WriteLine($"Номер: {id} \t Айди:{UId} \t Группа: {UserGroup}");
+
+                        }
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
             }
-            //check if user exists
-            return true;
+            
         }
 
         public void AddUser(string UserId, string UserGroup)
