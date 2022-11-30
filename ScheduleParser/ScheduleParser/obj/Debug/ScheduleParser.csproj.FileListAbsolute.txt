@@ -65,3 +65,6 @@ C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\Schedul
 C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\ScheduleParser\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\ScheduleParser\bin\Debug\VkNet.xml
 C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\ScheduleParser\bin\Debug\VkNet.FluentCommands.GroupBot.dll
+C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\ScheduleParser\bin\Debug\Microsoft.Data.Sqlite.dll
+C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\ScheduleParser\bin\Debug\SQLitePCLRaw.core.dll
+C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\ScheduleParser\bin\Debug\Microsoft.Data.Sqlite.xml

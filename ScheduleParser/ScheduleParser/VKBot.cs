@@ -171,7 +171,6 @@ namespace ScheduleParser
                                             //add distant and extramural prefixes
                                             if (groupnumber.Message.Text.StartsWith("15.") && groupnumber.Message.Text.Length < 20)
                                             {
-                                                UserId = (long)groupnumber.Message.FromId;
                                                 UserGroup = groupnumber.Message.Text;
                                             }
                                         }
@@ -184,7 +183,7 @@ namespace ScheduleParser
                                             ChatId = _chatid,
                                             UserId = api.UserId.Value,
                                             Keyboard = keyboard,
-                                            Message = UserId+ "Вы выбрали " + UserGroup + " группу \n"
+                                            Message = "Вы выбрали " + UserGroup + " группу \n"
                                         });
                                     }
                                     groupButtonPressed = false;
@@ -206,9 +205,12 @@ namespace ScheduleParser
                         if (element.Instance is MessageNew messageNew)
                         {
                             Console.WriteLine(messageNew.Message.Text);
-
+                            
                             if (messageNew.Message.Text == "Начать")
                             {
+                                UserId = (long)messageNew.Message.FromId;
+                                //check if userID is in DataBase 
+
                                 api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
                                 {
                                     RandomId = rnd.Next(100000),
