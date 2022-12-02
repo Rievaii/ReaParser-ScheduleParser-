@@ -48,7 +48,6 @@ namespace ScheduleParser
                 .AddLine()
                 .Build();
             
-            //bot event handler
             while (true)
             {
                 try
@@ -210,7 +209,7 @@ namespace ScheduleParser
                             if (messageNew.Message.Text == "Начать")
                             {
                                 UserId = (long)messageNew.Message.FromId;
-                                //check if userID is in DataBase 
+                                //db authorization logic 
 
                                 api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
                                 {
