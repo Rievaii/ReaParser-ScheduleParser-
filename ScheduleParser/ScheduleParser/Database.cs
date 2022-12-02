@@ -1,44 +1,58 @@
-﻿using System.Data.SQLite;
-using System;
+﻿using System;
+using System.Data.SQLite;
 
 namespace ScheduleParser
 {
     internal class Database
     {
-        
+        SQLiteConnection sqlite_conn = new SQLiteConnection(@"Data Source=C:\Program Files\SQLiteStudio\schedulebot");
+        SQLiteDataReader sqlite_datareader;
+        SQLiteCommand sqlite_cmd;
 
-
-       
-
-        public void ReadData()
+        public void GetUserGroup(string UserId)
         {
-            SQLiteConnection conn;
-            // Create a new database connection:
-            conn = new SQLiteConnection(@"Data Source=C:\Program Files\SQLiteStudio\schedulebot");
-            // Open the connection:
             try
             {
-                conn.Open();
+                sqlite_conn.Open();
+                
+                sqlite_cmd = sqlite_conn.CreateCommand();
+
+                //get exact group number with user id 
+                sqlite_cmd.CommandText = $"SELECT * FROM users WHERE UserId = '{UserId}';";
+
+                sqlite_datareader = sqlite_cmd.ExecuteReader();
+
+                while (sqlite_datareader.Read())
+                {
+                    int myreader = sqlite_datareader.GetInt32(0);
+                    string _UserId = sqlite_datareader.GetString(1);
+                    string _UserGroup = sqlite_datareader.GetString(2);
+                    Console.WriteLine("Запрошенный пользователь: \nid: " + myreader + "\nUserID: " + _UserId + "\nUserGroup: " + _UserGroup);
+                    //for testing only
+                    Console.Read();
+                }
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine("Невозможно получить доступ к базе данных / Не найдены записи");
             }
-            SQLiteDataReader sqlite_datareader;
-            SQLiteCommand sqlite_cmd;
-            sqlite_cmd = conn.CreateCommand();
-            sqlite_cmd.CommandText = "SELECT * FROM users";
-
-            sqlite_datareader = sqlite_cmd.ExecuteReader();
-            while (sqlite_datareader.Read())
+            finally
             {
-                int myreader = sqlite_datareader.GetInt32(0);
-                string UserId = sqlite_datareader.GetString(1);
-                string UserGroup = sqlite_datareader.GetString(2);
-                Console.WriteLine("\nid"+myreader+"\nUserID: "+UserId +"\n UserGroup: "+UserGroup);
-                Console.Read();
+                sqlite_conn.Close();
             }
-            conn.Close();
+        }
+        public void AddUser(string UserId, string UserGroup)
+        {
+            /*
+             sqlite_cmd = conn.CreateCommand();
+
+                sqlite_cmd.CommandText = "INSERT INTO users (UserId, UserGroup) VALUES (228, 4.105);";
+                sqlite_cmd.ExecuteNonQuery();
+            */
+        }
+        public bool isUserAuthorized(string UserId)
+        {
+            return false;
         }
     }
 }

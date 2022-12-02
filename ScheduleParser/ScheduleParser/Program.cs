@@ -8,7 +8,7 @@ namespace ScheduleParser
         {
 
             Database database = new Database();
-            database.ReadData();
+            database.GetUserGroup("123");
             //VKBot vk = new VKBot();
 
             //vk.Connect();
