@@ -36,33 +36,46 @@ namespace ScheduleParser
                 {
                     var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/thead/tr/th/h5"));
                     driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-                    
+
                     var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody"));
                     int AmountOfClasses = Int32.Parse(block.GetAttribute("childElementCount"));
                     driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(50);
 
-                    //test direct approach to rasp
-                    for (int subject = 0; subject < AmountOfClasses-1; subject++)
+                    //test direct approach to rasp with available rasp
+                    /*
+                    if (AmountOfClasses > 0)
                     {
-                        WeekClasses.Add(
-                            //Day
-                            "\n" + WeekDayLabel.Text + "\n" +
-                            //Subject number (х Пара)
-                            driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody/tr[{subject}]/td[1]/span")).GetAttribute("innerText") +"  "+
-                            //Start Time
-                            driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody/tr[{subject}]/td[1]/text()[1]")).GetAttribute("innerText") + "  " +
-                            //End Time
-                            driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody/tr[{subject}]/td[1]/text()[2]")).GetAttribute("innerText") + " \n" +
-                            //Subject Info
-                            driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody/tr[{subject}]/td[2]/a")).GetAttribute("innerText") + " \n " 
-                            );
-                    }
+                        for (int subject = 0; subject < AmountOfClasses; subject++)
+                        {
 
-                    //WeekClasses.Add("\n" + WeekDayLabel.Text + "\n" + block.GetAttribute("innerText"));
+                            //Subject number (х Пара)
+                            var SubjectNumber = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody/tr[{subject}]/td[1]/span")).GetAttribute("innerText");
+                            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+                            //Start Time
+                            var StartTime = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody/tr[{subject}]/td[1]/text()[1]")).GetAttribute("innerText");
+                            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+                            //End Time
+                            var EndTime = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody/tr[{subject}]/td[1]/text()[2]")).GetAttribute("innerText");
+                            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+                            //Subject Info
+                            var SubjectInfo = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{i}]/div/table/tbody/tr[{subject}]/td[2]/a")).GetAttribute("innerText");
+                            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+
+
+                            WeekClasses.Add("\n" + WeekDayLabel.Text + "\n" + SubjectNumber + "    " + StartTime + " " + EndTime + "\n" + SubjectInfo);
+
+                        }
+                    }
+                    else
+                    {
+                        WeekClasses.Add("\n" + WeekDayLabel.Text + "\n" + "Нет занятий");
+                    }
+                    */
+                    WeekClasses.Add("\n" + WeekDayLabel.Text + "\n" + block.GetAttribute("innerText"));
                 }
             }
             catch (Exception)
-            { 
+            {
                 Console.WriteLine("\n Unable to get to the website \n");
                 UnableToGetToWebSite = true;
             }
@@ -101,7 +114,7 @@ namespace ScheduleParser
                     DayClasses.Add("Нет занятий \n");
                 }
             }
-            catch (Exception) 
+            catch (Exception)
             {
                 Console.WriteLine("\n Unable to get to the website \n");
                 UnableToGetToWebSite = true;

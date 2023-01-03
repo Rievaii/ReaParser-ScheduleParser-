@@ -5,19 +5,18 @@ namespace ScheduleParser
 {
     internal class Database
     {
-        SQLiteConnection sqlite_conn = new SQLiteConnection(@"Data Source=C:\Program Files\SQLiteStudio\schedulebot");
-        SQLiteDataReader sqlite_datareader;
-        SQLiteCommand sqlite_cmd;   
-
-        string _UserId;
-        string _UserGroup;
+        private SQLiteConnection sqlite_conn = new SQLiteConnection(@"Data Source=C:\Program Files\SQLiteStudio\schedulebot");
+        private SQLiteDataReader sqlite_datareader;
+        private SQLiteCommand sqlite_cmd;
+        private string _UserId;
+        private string _UserGroup;
 
         public string isRegistred(string UserId)
         {
             try
             {
                 sqlite_conn.Open();
-                
+
                 sqlite_cmd = sqlite_conn.CreateCommand();
 
                 //get exact group number with user id 
@@ -33,7 +32,7 @@ namespace ScheduleParser
                     Console.WriteLine("Запрошенный пользователь: \nid: " + myreader + "\nUserID: " + _UserId + "\nUserGroup: " + _UserGroup);
                 }
                 sqlite_conn.Close();
-                if (_UserGroup != null && _UserGroup != null)
+                if (_UserGroup != null && _UserId != null)
                 {
                     return _UserGroup;
                 }
@@ -52,28 +51,17 @@ namespace ScheduleParser
                 sqlite_conn.Close();
             }
         }
-        /*
+
         public void AddUser(string UserId, string UserGroup)
         {
-            if (isRegistred(UserId))
-            {
-                Console.WriteLine("Пользователь есть в базе");
-                //only for testing
-                Console.Read();
-            }
-            else if (!isRegistred(UserId))
-            {
-                Console.WriteLine("Такого пользователя нет в базе");
-                //only for testing
-                Console.Read(); 
-                
-                sqlite_cmd = conn.CreateCommand();
 
-                sqlite_cmd.CommandText = "INSERT INTO users (UserId, UserGroup) VALUES (228, 4.105);";
-                sqlite_cmd.ExecuteNonQuery();
-            
-            }
+            sqlite_conn.Open();
+
+            sqlite_cmd = sqlite_conn.CreateCommand();
+
+            sqlite_cmd.CommandText = $"INSERT INTO users (vkid, groupid) VALUES ({UserId}, '{UserGroup}');";
+            sqlite_cmd.ExecuteNonQuery();
+            sqlite_conn.Close();
         }
-        */
     }
 }

@@ -183,6 +183,8 @@ namespace ScheduleParser
                                                     Keyboard = keyboard,
                                                     Message = "Вы выбрали " + UserGroup + " группу \n"
                                                 });
+                                                //ask user to remember his group?
+                                                database.AddUser(UserId.ToString(), UserGroup);
                                             }
                                         }
                                     }
@@ -208,7 +210,7 @@ namespace ScheduleParser
                         if (element.Instance is MessageNew messageNew)
                         {
                             Console.WriteLine(messageNew.Message.Text);
-                            
+                            //works only with intaracting program user 
                             if (messageNew.Message.Text == "Начать")
                             {
                                 UserId = (long)messageNew.Message.FromId;
@@ -221,7 +223,7 @@ namespace ScheduleParser
                                         ChatId = _chatid,
                                         UserId = api.UserId.Value,
                                         Keyboard = GroupManagerKeyboard,
-                                        Message = "Для начала авторизируйтесь"
+                                        Message = "Для начала укажите вашу группу"
                                     });
                                 }else if (database.isRegistred(UserId.ToString()) != "")
                                 {
@@ -231,9 +233,10 @@ namespace ScheduleParser
                                         RandomId = rnd.Next(100000),
                                         ChatId = _chatid,
                                         UserId = api.UserId.Value,
-                                        Keyboard = GroupManagerKeyboard,
-                                        Message = "Вы уже авторизированный пользователь"
-                                    });
+                                        Keyboard = keyboard,
+                                        Message = "Сохраненная вами группа - "+ database.isRegistred(UserId.ToString())
+                                });
+                                    UserGroup = database.isRegistred(UserId.ToString());
                                 }
                                 
                             }
