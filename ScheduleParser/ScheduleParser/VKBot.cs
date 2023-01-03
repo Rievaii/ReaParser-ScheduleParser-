@@ -14,6 +14,7 @@ namespace ScheduleParser
     {
         private VkApi api = new VkApi();
         private Random rnd = new Random();
+        private Database database = new Database();
         private ReaParser parser = new ReaParser();
         private DateTime ClockInfoFromSystem = DateTime.Now;
 
@@ -65,6 +66,7 @@ namespace ScheduleParser
                     {
                         if (element.Instance is MessageNew button)
                         {
+                            //button handler
                             switch (button.Message.Payload)
                             {
                                 case "{\"button\":\"scheduleToday\"}":
@@ -188,6 +190,7 @@ namespace ScheduleParser
                                 });                              
                             }
                         }
+                        //exception handler
                         if (parser.UnableToGetToWebSite)
                         {
                             api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
@@ -200,6 +203,8 @@ namespace ScheduleParser
                             });
                             parser.UnableToGetToWebSite = false;
                         }
+
+                        //Chat start
                         if (element.Instance is MessageNew messageNew)
                         {
                             Console.WriteLine(messageNew.Message.Text);
@@ -207,16 +212,30 @@ namespace ScheduleParser
                             if (messageNew.Message.Text == "Начать")
                             {
                                 UserId = (long)messageNew.Message.FromId;
-                                //db authorization logic 
 
-                                api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
+                                if(database.isRegistred(UserId.ToString()) == "")
                                 {
-                                    RandomId = rnd.Next(100000),
-                                    ChatId = _chatid,
-                                    UserId = api.UserId.Value,
-                                    Keyboard = GroupManagerKeyboard,
-                                    Message = "Расписание РЭУ"
-                                });
+                                    api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
+                                    {
+                                        RandomId = rnd.Next(100000),
+                                        ChatId = _chatid,
+                                        UserId = api.UserId.Value,
+                                        Keyboard = GroupManagerKeyboard,
+                                        Message = "Для начала авторизируйтесь"
+                                    });
+                                }else if (database.isRegistred(UserId.ToString()) != "")
+                                {
+                                    //create authorized user keyboard instead of 
+                                    api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
+                                    {
+                                        RandomId = rnd.Next(100000),
+                                        ChatId = _chatid,
+                                        UserId = api.UserId.Value,
+                                        Keyboard = GroupManagerKeyboard,
+                                        Message = "Вы уже авторизированный пользователь"
+                                    });
+                                }
+                                
                             }
                         }
                     }

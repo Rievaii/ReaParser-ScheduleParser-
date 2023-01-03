@@ -32,6 +32,7 @@ namespace ScheduleParser
                     _UserGroup = sqlite_datareader.GetString(2);
                     Console.WriteLine("Запрошенный пользователь: \nid: " + myreader + "\nUserID: " + _UserId + "\nUserGroup: " + _UserGroup);
                 }
+                sqlite_conn.Close();
                 if (_UserGroup != null && _UserGroup != null)
                 {
                     return _UserGroup;
