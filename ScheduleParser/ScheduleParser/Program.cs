@@ -7,11 +7,12 @@ namespace ScheduleParser
         private static void Main(string[] args)
         {
 
-            //Database database = new Database();
-            //database.AddUser("845","1232");
+            Database database = new Database();
+            Console.WriteLine(database.isRegistred("1235"));
+            
             VKBot vk = new VKBot();
 
-            vk.Connect();
+            //vk.Connect();
 
         }
     }

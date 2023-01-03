@@ -184,18 +184,6 @@ namespace ScheduleParser
                                             }
                                         }
                                     }
-                                    /*
-                                    if (UserGroup != null)
-                                    {
-                                        api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
-                                        {
-                                            RandomId = rnd.Next(100000),
-                                            ChatId = _chatid,
-                                            UserId = api.UserId.Value,
-                                            Keyboard = keyboard,
-                                            Message = "Вы выбрали " + UserGroup + " группу \n"
-                                        });
-                                    }*/
                                     groupButtonPressed = false;
                                 });                              
                             }

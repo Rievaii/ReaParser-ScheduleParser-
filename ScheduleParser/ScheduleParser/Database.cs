@@ -12,7 +12,7 @@ namespace ScheduleParser
         string _UserId;
         string _UserGroup;
 
-        public bool isRegistred(string UserId)
+        public string isRegistred(string UserId)
         {
             try
             {
@@ -34,23 +34,24 @@ namespace ScheduleParser
                 }
                 if (_UserGroup != null && _UserGroup != null)
                 {
-                    return true;
+                    return _UserGroup;
                 }
                 else
                 {
-                    return false;
+                    return "";
                 }
             }
             catch
             {
                 Console.WriteLine("Невозможно получить доступ к базе данных / Не найдены записи");
-                return false;
+                return "";
             }
             finally
             {
                 sqlite_conn.Close();
             }
         }
+        /*
         public void AddUser(string UserId, string UserGroup)
         {
             if (isRegistred(UserId))
@@ -64,13 +65,14 @@ namespace ScheduleParser
                 Console.WriteLine("Такого пользователя нет в базе");
                 //only for testing
                 Console.Read(); 
-                /*
+                
                 sqlite_cmd = conn.CreateCommand();
 
                 sqlite_cmd.CommandText = "INSERT INTO users (UserId, UserGroup) VALUES (228, 4.105);";
                 sqlite_cmd.ExecuteNonQuery();
-            */
+            
             }
         }
+        */
     }
 }
