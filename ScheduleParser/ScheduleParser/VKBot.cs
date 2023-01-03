@@ -173,9 +173,18 @@ namespace ScheduleParser
                                             if (groupnumber.Message.Text.StartsWith("15.") && groupnumber.Message.Text.Length < 20)
                                             {
                                                 UserGroup = groupnumber.Message.Text;
+                                                api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
+                                                {
+                                                    RandomId = rnd.Next(100000),
+                                                    ChatId = _chatid,
+                                                    UserId = api.UserId.Value,
+                                                    Keyboard = keyboard,
+                                                    Message = "Вы выбрали " + UserGroup + " группу \n"
+                                                });
                                             }
                                         }
                                     }
+                                    /*
                                     if (UserGroup != null)
                                     {
                                         api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
@@ -186,7 +195,7 @@ namespace ScheduleParser
                                             Keyboard = keyboard,
                                             Message = "Вы выбрали " + UserGroup + " группу \n"
                                         });
-                                    }
+                                    }*/
                                     groupButtonPressed = false;
                                 });                              
                             }
