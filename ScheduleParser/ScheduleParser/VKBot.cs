@@ -17,6 +17,7 @@ namespace ScheduleParser
         private Database database = new Database();
         private ReaParser parser = new ReaParser();
         private DateTime ClockInfoFromSystem = DateTime.Now;
+        
 
         public static long _chatid = 2;
         private string UserGroup;
@@ -24,12 +25,14 @@ namespace ScheduleParser
 
         public void Connect()
         {
+            DotNetEnv.Env.Load(@"C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\ScheduleParser\.env");
+
+            var m_AccessToken = Environment.GetEnvironmentVariable("TOKEN");
             bool groupButtonPressed = false;
 
             api.Authorize(new ApiAuthParams
             {
-                //move token to a secret-locked file
-                AccessToken = "vk1.a.pE-uai9Z_ikQ0A0ZIjqbBJZhD2-uGVrNn5jhlkult4jtKhDpRq3czBEBy6FoZehh8MSvsJ4NK7_AGj6c706k6FbmzRBoTmeWsbThCgdOKZeUCaANnNlHh_GTZ_zeTojHFrbeAY6rfeibzeot3MqLGFVw4PyFhW-0msTFcANTM023Pw9Eq1gne8_KEgJQSszZ"
+                AccessToken = $"{m_AccessToken}"
             });
 
             var settings = api.Groups.GetLongPollServer(215942977);
@@ -234,7 +237,7 @@ namespace ScheduleParser
                                         ChatId = _chatid,
                                         UserId = api.UserId.Value,
                                         Keyboard = keyboard,
-                                        Message = "Сохраненная вами группа - "+ database.isRegistred(UserId.ToString())
+                                        Message = "Сохраненная вами группа:  "+ database.isRegistred(UserId.ToString())
                                 });
                                     UserGroup = database.isRegistred(UserId.ToString());
                                 }

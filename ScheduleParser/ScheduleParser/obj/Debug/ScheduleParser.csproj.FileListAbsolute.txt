@@ -113,3 +113,6 @@ C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\Schedul
 C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\ScheduleParser\bin\Debug\x64\sqlite3.dll
 C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\ScheduleParser\bin\Debug\System.Data.SQLite.dll
 C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\ScheduleParser\bin\Debug\System.Data.SQLite.xml
+C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\ScheduleParser\bin\Debug\DotNetEnv.dll
+C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\ScheduleParser\bin\Debug\Sprache.dll
+C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\ScheduleParser\bin\Debug\Sprache.xml
