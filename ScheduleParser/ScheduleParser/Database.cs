@@ -19,7 +19,6 @@ namespace ScheduleParser
 
                 sqlite_cmd = sqlite_conn.CreateCommand();
 
-                //get exact group number with user id 
                 sqlite_cmd.CommandText = $"SELECT * FROM users WHERE vkid = '{UserId}';";
 
                 sqlite_datareader = sqlite_cmd.ExecuteReader();
@@ -31,7 +30,9 @@ namespace ScheduleParser
                     _UserGroup = sqlite_datareader.GetString(2);
                     Console.WriteLine("Запрошенный пользователь: \nid: " + myreader + "\n vkid: " + _UserId + "\n groupid: " + _UserGroup);
                 }
+
                 sqlite_conn.Close();
+
                 if (_UserGroup != null && _UserId != null)
                 {
                     return _UserGroup;
@@ -60,9 +61,12 @@ namespace ScheduleParser
             sqlite_cmd = sqlite_conn.CreateCommand();
 
             sqlite_cmd.CommandText = $"INSERT INTO users (vkid, groupid) VALUES ({UserId}, '{UserGroup}');";
-            //check if record is ok
+
+            //!make user group override interface
+
             sqlite_cmd.ExecuteNonQuery();
             sqlite_conn.Close();
+
         }
     }
 }

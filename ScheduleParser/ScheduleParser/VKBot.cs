@@ -26,8 +26,8 @@ namespace ScheduleParser
         public void Connect()
         {
             DotNetEnv.Env.Load(@"C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\ScheduleParser\.env");
-
             var m_AccessToken = Environment.GetEnvironmentVariable("TOKEN");
+
             bool groupButtonPressed = false;
 
             api.Authorize(new ApiAuthParams

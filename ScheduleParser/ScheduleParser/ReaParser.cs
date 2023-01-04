@@ -77,7 +77,6 @@ namespace ScheduleParser
 
 
                             WeekClasses.Add("\n" + WeekDayLabel.Text + "\n" + SubjectNumber + "    " + StartTime + " " + EndTime + "\n" + SubjectInfo);
-
                         }
                     }
                     else
