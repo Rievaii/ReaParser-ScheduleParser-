@@ -60,6 +60,7 @@ namespace ScheduleParser
             sqlite_cmd = sqlite_conn.CreateCommand();
 
             sqlite_cmd.CommandText = $"INSERT INTO users (vkid, groupid) VALUES ({UserId}, '{UserGroup}');";
+            //check if record is ok
             sqlite_cmd.ExecuteNonQuery();
             sqlite_conn.Close();
         }

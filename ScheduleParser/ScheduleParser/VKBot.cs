@@ -19,7 +19,7 @@ namespace ScheduleParser
         private DateTime ClockInfoFromSystem = DateTime.Now;
         
 
-        public static long _chatid = 2;
+        public static long _chatid = 1;
         private string UserGroup;
         private long UserId;
 
