@@ -28,7 +28,9 @@ namespace ScheduleParser
                     int myreader = sqlite_datareader.GetInt32(0);
                     _UserId = sqlite_datareader.GetString(1);
                     _UserGroup = sqlite_datareader.GetString(2);
-                    Console.WriteLine("Запрошенный пользователь: \nid: " + myreader + "\n vkid: " + _UserId + "\n groupid: " + _UserGroup);
+
+                    Console.WriteLine("Текущий пользователь: \nid: " + myreader + "\n vkid: " + _UserId + "\n groupid: " + _UserGroup);
+
                 }
 
                 sqlite_conn.Close();
@@ -55,16 +57,31 @@ namespace ScheduleParser
 
         public void AddUser(string UserId, string UserGroup)
         {
+            if (isRegistred(UserId) == "")
+            {
+                sqlite_conn.Open();
 
-            sqlite_conn.Open();
+                sqlite_cmd = sqlite_conn.CreateCommand();
 
-            sqlite_cmd = sqlite_conn.CreateCommand();
+                sqlite_cmd.CommandText = $"INSERT INTO users (vkid, groupid) VALUES ({UserId}, '{UserGroup}');";
 
-            sqlite_cmd.CommandText = $"INSERT INTO users (vkid, groupid) VALUES ({UserId}, '{UserGroup}');";
+                sqlite_cmd.ExecuteNonQuery();
 
-            //!make user group override interface
+                Console.WriteLine("Пользователь успешно добавлен в базу данных"+UserId+" "+UserGroup);
+            }
+            else if(isRegistred(UserId)!= "")
+            {
+                sqlite_conn.Open();
 
-            sqlite_cmd.ExecuteNonQuery();
+                sqlite_cmd = sqlite_conn.CreateCommand();
+
+                sqlite_cmd.CommandText = $"UPDATE users SET groupid = '{UserGroup}' WHERE vkid = {UserId};";
+
+                sqlite_cmd.ExecuteNonQuery();
+
+                Console.WriteLine("Группа пользователя "+ UserId+" обновлена на "+ UserGroup);
+            }
+            
             sqlite_conn.Close();
 
         }
