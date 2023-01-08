@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using VkNet;
 using VkNet.Enums.SafetyEnums;
@@ -18,14 +19,11 @@ namespace ScheduleParser
         private ReaParser parser = new ReaParser();
         private DateTime ClockInfoFromSystem = DateTime.Now;
 
-        //1 - vkCollect chat
-        //2 - Клирик, маг и вор
-        //PeerId = UserId
         public static long _chatid;
         private string UserGroup;
         private long UserId;
 
-        public void Connect()
+        public void VkConnect()
         {
             DotNetEnv.Env.Load(@"C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\ScheduleParser\.env");
             var m_AccessToken = Environment.GetEnvironmentVariable("TOKEN");
@@ -77,28 +75,16 @@ namespace ScheduleParser
                                 case "{\"button\":\"scheduleToday\"}":
                                     if (UserGroup != null)
                                     {
+                                        var Today = (int)(ClockInfoFromSystem.DayOfWeek + 6) % 7;
+
                                         api.Messages.Send(new MessagesSendParams
                                         {
                                             RandomId = rnd.Next(100000),
                                             PeerId = _chatid,
                                             UserId = api.UserId.Value,
                                             Keyboard = keyboard,
-                                            Message = "Расписание группы " + UserGroup + " на сегодня: \n"
-                                        });
-                                        var Today = (int)(ClockInfoFromSystem.DayOfWeek + 6) % 7;
-
-                                        foreach (var DaySchedule in parser.GetDaySchedule(UserGroup,Today+1))
-                                        {
-                                            api.Messages.Send(new MessagesSendParams
-                                            {
-                                                RandomId = rnd.Next(100000),
-                                                PeerId = _chatid,
-                                                UserId = api.UserId.Value,
-                                                Keyboard = keyboard,
-                                                Message = DaySchedule
-                                            });
-                                        }
-                                        parser.ClearDaySchedule();
+                                            Message = "Расписание группы " + UserGroup + " на сегодня: \n"+ parser.RunParser(UserGroup, Today)
+                                        });                                        
                                     }
                                     else
                                     {
@@ -122,20 +108,8 @@ namespace ScheduleParser
                                             PeerId = _chatid,
                                             UserId = api.UserId.Value,
                                             Keyboard = keyboard,
-                                            Message = "Расписание группы " + UserGroup + " на эту неделю: \n"
+                                            Message = "Расписание группы " + UserGroup + " на эту неделю: \n"+ parser.RunParser(UserGroup)
                                         });
-                                        foreach (var WeekSchedule in parser.GetWeekSchedule(UserGroup))
-                                        {
-                                            api.Messages.Send(new MessagesSendParams
-                                            {
-                                                RandomId = rnd.Next(100000),
-                                                PeerId = _chatid,
-                                                UserId = api.UserId.Value,
-                                                Keyboard = keyboard,
-                                                Message = WeekSchedule
-                                            });
-                                        }
-                                        parser.ClearWeekSchedule();
                                     }
                                     else
                                     {

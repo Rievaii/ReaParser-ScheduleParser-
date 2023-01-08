@@ -5,7 +5,7 @@ namespace ScheduleParser
 {
     internal class Database
     {
-        private SQLiteConnection sqlite_conn = new SQLiteConnection(@"Data Source=C:\Program Files\SQLiteStudio\schedulebot");
+        private SQLiteConnection sqlite_conn = new SQLiteConnection(@"Data Source=C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\ScheduleParser\schedulebot");
         private SQLiteDataReader sqlite_datareader;
         private SQLiteCommand sqlite_cmd;
         private string _UserId;

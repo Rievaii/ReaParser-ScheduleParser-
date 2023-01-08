@@ -11,7 +11,7 @@ namespace ScheduleParser
             
             VKBot vk = new VKBot();
 
-            vk.Connect();
+            vk.VkConnect();
 
         }
     }
