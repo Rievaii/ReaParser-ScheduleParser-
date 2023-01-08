@@ -35,7 +35,7 @@ namespace ScheduleParser
 
                 Thread.Sleep(1000);
 
-                for (int Day = 1; Day < 6; Day++)
+                for (int Day = 1; Day <= 6; Day++)
                 {
                     var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/tbody"));
                     driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(50);
@@ -45,8 +45,6 @@ namespace ScheduleParser
                     var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/thead/tr/th/h5"));
                     driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
 
-
-                    //wrong algorithm не доходит до существующей пары, пустые скипает
 
                     if (Int32.Parse(driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/tbody")).GetAttribute("childElementCount")) > 1)
                     {
@@ -90,10 +88,12 @@ namespace ScheduleParser
             }
         }
 
-        //:Override for a day - not working
-        public string RunParser(string _GroupId, int ExactDay)
+        //:Override for the day - not working (test on day with classes)
+        
+        public string RunParser(string _GroupId, string Date)
         {
             string GroupId = _GroupId;
+            
             DaySchedule = "";
 
             try
@@ -108,13 +108,14 @@ namespace ScheduleParser
                 search.Click();
 
                 Thread.Sleep(1000);
-
+                
                 var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{ExactDay}]/div/table/tbody"));
                 driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(50);
                 int AmountOfClasses = Int32.Parse(block.GetAttribute("childElementCount"));
 
                 var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{ExactDay}]/div/table/thead/tr/th/h5"));
                 driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+
 
                 if (Int32.Parse(driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{ExactDay}]/div/table/tbody")).GetAttribute("childElementCount")) > 1)
                 {
@@ -145,7 +146,7 @@ namespace ScheduleParser
                 }
                 else
                 {
-                    WeekSchedule += "\n" + WeekDayLabel.Text + "\n" + "Нет занятий" + "\n";
+                    DaySchedule += "\n" + WeekDayLabel.Text + "\n" + "Нет занятий" + "\n";
                 }
                 return DaySchedule;
             }
