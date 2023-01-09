@@ -20,10 +20,6 @@ namespace ScheduleParser
         DateTime date = DateTime.Now;
         private DateTime ClockInfoFromSystem = DateTime.Now;
 
-        
-        private string UserGroup;
-        private long UserId;
-
         public void VkConnect()
         {
             DotNetEnv.Env.Load(@"C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\ScheduleParser\.env");
@@ -80,10 +76,8 @@ namespace ScheduleParser
 
                             if (messageNew.Message.Text == "Начать")
                             {
-                                UserId = (long)messageNew.Message.FromId;
-
-
-                                if (database.isRegistred(UserId.ToString()) == "")
+                                //check if user is in Database
+                                if (database.GetUserGroup(messageNew.Message.UserId.Value.ToString()) == "")
                                 {
                                     api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
                                     {
@@ -94,7 +88,7 @@ namespace ScheduleParser
                                         Message = "Для начала укажите вашу группу"
                                     });
                                 }
-                                else if (database.isRegistred(UserId.ToString()) != "")
+                                else if (database.GetUserGroup(messageNew.Message.UserId.Value.ToString()) != "")
                                 {
                                     api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
                                     {
@@ -102,11 +96,12 @@ namespace ScheduleParser
                                         PeerId = messageNew.Message.PeerId.Value,
                                         UserId = api.UserId.Value,
                                         Keyboard = keyboard,
-                                        Message = "Сохраненная вами группа:  " + database.isRegistred(UserId.ToString())
+                                        Message = "Сохраненная вами группа:  " + database.GetUserGroup(messageNew.Message.UserId.Value.ToString())
                                     });
-                                    UserGroup = database.isRegistred(UserId.ToString());
+                                    //UserGroup = database.GetUserGroup(UserId.ToString());
                                 }
                             }
+
                             if (parser.UnableToGetToWebSite)
                             {
                                 api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
@@ -115,19 +110,19 @@ namespace ScheduleParser
                                     PeerId = messageNew.Message.PeerId.Value,
                                     UserId = api.UserId.Value,
                                     Keyboard = keyboard,
-                                    Message = "Ошибка: невозможно получить расписание указанной группы"
+                                    Message = "Ошибка: невозможно получить расписание. Проверьте правильность написания группы и попробуйте еще раз."
                                 });
                                 parser.UnableToGetToWebSite = false;
                             }
                         }
                         if (element.Instance is MessageNew button)
                         {
-                            //button handler
+                            //button handler - messages are not displayed correctly
                             switch (button.Message.Payload)
                             {
                                 case "{\"button\":\"scheduleToday\"}":
 
-                                    if (UserGroup != null)
+                                    if (database.GetUserGroup(button.Message.UserId.Value.ToString()) != null)
                                     {
                                         api.Messages.Send(new MessagesSendParams
                                         {
@@ -135,7 +130,7 @@ namespace ScheduleParser
                                             PeerId = button.Message.PeerId.Value,
                                             UserId = api.UserId.Value,
                                             Keyboard = keyboard,
-                                            Message = "Расписание группы " + UserGroup + " на сегодня: \n"+ parser.RunParser(UserGroup, Today)
+                                            Message = "Расписание группы " + database.GetUserGroup(button.Message.UserId.Value.ToString()) + " на сегодня: \n"+ parser.RunParser(database.GetUserGroup(button.Message.UserId.Value.ToString()), Today)
                                         });                                        
                                     }
                                     else
@@ -153,7 +148,7 @@ namespace ScheduleParser
 
                                 case "{\"button\":\"scheduleTommorow\"}":
                                     
-                                    if (UserGroup != null)
+                                    if (database.GetUserGroup(button.Message.UserId.Value.ToString()) != null)
                                     {
                                         api.Messages.Send(new MessagesSendParams
                                         {
@@ -161,7 +156,7 @@ namespace ScheduleParser
                                             PeerId = button.Message.PeerId.Value,
                                             UserId = api.UserId.Value,
                                             Keyboard = keyboard,
-                                            Message = "Расписание группы " + UserGroup + " на завтра: \n" + parser.RunParser(UserGroup, Tommorow)
+                                            Message = "Расписание группы " + database.GetUserGroup(button.Message.UserId.Value.ToString()) + " на завтра: \n" + parser.RunParser(database.GetUserGroup(button.Message.UserId.Value.ToString()), Tommorow)
                                         });
                                     }
                                     else
@@ -178,7 +173,7 @@ namespace ScheduleParser
                                     break;
                                 
                                 case "{\"button\":\"scheduleWeek\"}":
-                                    if (UserGroup != null)
+                                    if (database.GetUserGroup(button.Message.UserId.Value.ToString()) != null)
                                     {
                                         api.Messages.Send(new MessagesSendParams
                                         {
@@ -186,7 +181,7 @@ namespace ScheduleParser
                                             PeerId = button.Message.PeerId.Value,
                                             UserId = api.UserId.Value,
                                             Keyboard = keyboard,
-                                            Message = "Расписание группы " + UserGroup + " на эту неделю: \n"+ parser.RunParser(UserGroup)
+                                            Message = "Расписание группы " + database.GetUserGroup(button.Message.UserId.Value.ToString()) + " на эту неделю: \n"+ parser.RunParser(database.GetUserGroup(button.Message.UserId.Value.ToString()))
                                         });
                                     }
                                     else
@@ -219,7 +214,7 @@ namespace ScheduleParser
                             GetGroupNumber();
                             async void GetGroupNumber()
                             {
-                                UserGroup = null;
+                                string UserGroup = null;
 
                                 await Task.Run(() =>
                                 {
@@ -241,7 +236,7 @@ namespace ScheduleParser
                                                     Message = "Вы выбрали " + UserGroup + " группу \n"
                                                 });
 
-                                                database.AddUser(UserId.ToString(), UserGroup);
+                                                database.AddUser(database.GetUserGroup(groupnumber.Message.UserId.Value.ToString()), UserGroup);
                                             }
                                         }
                                     }

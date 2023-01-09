@@ -11,7 +11,7 @@ namespace ScheduleParser
         private string _UserId;
         private string _UserGroup;
 
-        public string isRegistred(string UserId)
+        public string GetUserGroup(string UserId)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace ScheduleParser
 
         public void AddUser(string UserId, string UserGroup)
         {
-            if (isRegistred(UserId) == "")
+            if (GetUserGroup(UserId) == "")
             {
                 sqlite_conn.Open();
 
@@ -69,7 +69,7 @@ namespace ScheduleParser
 
                 Console.WriteLine("Пользователь успешно добавлен в базу данных"+UserId+" "+UserGroup);
             }
-            else if(isRegistred(UserId)!= "")
+            else if(GetUserGroup(UserId)!= "")
             {
                 sqlite_conn.Open();
 

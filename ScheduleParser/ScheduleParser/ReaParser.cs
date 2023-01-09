@@ -2,6 +2,7 @@
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ScheduleParser
 {
@@ -15,7 +16,7 @@ namespace ScheduleParser
         private string WeekSchedule;
         private string DaySchedule;
 
-        public string RunParser(string _GroupId)
+        public async Task<string> RunParser(string _GroupId)
         {
 
             string GroupId = _GroupId;
@@ -35,6 +36,7 @@ namespace ScheduleParser
 
                 Thread.Sleep(1000);
 
+                await Task.Run(() => { 
                 for (int Day = 1; Day <= 6; Day++)
                 {
                     var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/tbody"));
@@ -79,6 +81,7 @@ namespace ScheduleParser
                         WeekSchedule += "\n" + WeekDayLabel.Text + "\n" + "Нет занятий" + "\n";
                     }
                 }
+                });
                 return WeekSchedule;
             }
             catch (Exception e)
@@ -89,7 +92,7 @@ namespace ScheduleParser
             }
         }
 
-        //:Override for the day - not working (test on day with classes)
+        //:Override for the day 
         
         public string RunParser(string _GroupId, string Date)
         {
