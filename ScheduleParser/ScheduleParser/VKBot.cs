@@ -30,13 +30,9 @@ namespace ScheduleParser
             var m_AccessToken = Environment.GetEnvironmentVariable("TOKEN");
 
             bool groupButtonPressed = false;
-            var Today = (int)(ClockInfoFromSystem.DayOfWeek + 6) % 7;
-            if(Today == 7)
-            {
-                Today = 1;
-            }
+            string Today = date.ToString("d");
+            string Tommorow = DateTime.Today.AddDays(1).ToString("d");
 
-            Console.WriteLine("Номер сегодняшнего дня - "+ Today);
 
             api.Authorize(new ApiAuthParams
             {
@@ -77,7 +73,7 @@ namespace ScheduleParser
 
                     foreach (var element in poll.Updates)
                     {
-                        //Chat start
+                        //Chat handler
                         if (element.Instance is MessageNew messageNew)
                         {
                             Console.WriteLine(messageNew.Message.Text);
@@ -139,7 +135,7 @@ namespace ScheduleParser
                                             PeerId = button.Message.PeerId.Value,
                                             UserId = api.UserId.Value,
                                             Keyboard = keyboard,
-                                            Message = "Расписание группы " + UserGroup + " на сегодня: \n"+ parser.RunParser(UserGroup, date.ToString("d"))
+                                            Message = "Расписание группы " + UserGroup + " на сегодня: \n"+ parser.RunParser(UserGroup, Today)
                                         });                                        
                                     }
                                     else
@@ -165,7 +161,7 @@ namespace ScheduleParser
                                             PeerId = button.Message.PeerId.Value,
                                             UserId = api.UserId.Value,
                                             Keyboard = keyboard,
-                                            Message = "Расписание группы " + UserGroup + " на сегодня: \n" + parser.RunParser(UserGroup, Today+1)
+                                            Message = "Расписание группы " + UserGroup + " на завтра: \n" + parser.RunParser(UserGroup, Tommorow)
                                         });
                                     }
                                     else
@@ -232,7 +228,7 @@ namespace ScheduleParser
                                         if (element.Instance is MessageNew groupnumber)
                                         {
                                             //add distant and extramural prefixes
-                                            //bug is still exists 15.any number
+                                            //exploit is still exists 15.any number
                                             if (groupnumber.Message.Text.StartsWith("15.") && groupnumber.Message.Text.Length < 20)
                                             {
                                                 UserGroup = groupnumber.Message.Text;

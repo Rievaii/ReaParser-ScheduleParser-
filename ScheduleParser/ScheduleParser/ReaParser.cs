@@ -69,7 +69,8 @@ namespace ScheduleParser
                             }
                             catch (NoSuchElementException e)
                             {
-                                Console.WriteLine(e);
+                                //=> Class does not exist
+                                //Console.WriteLine(e);
                             }
                         }
                     }
@@ -108,45 +109,62 @@ namespace ScheduleParser
                 search.Click();
 
                 Thread.Sleep(1000);
+
                 
-                var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{ExactDay}]/div/table/tbody"));
-                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(50);
-                int AmountOfClasses = Int32.Parse(block.GetAttribute("childElementCount"));
-
-                var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{ExactDay}]/div/table/thead/tr/th/h5"));
-                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-
-
-                if (Int32.Parse(driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{ExactDay}]/div/table/tbody")).GetAttribute("childElementCount")) > 1)
+                for (int Day = 1; Day <= 6; Day++)
                 {
-                    for (int subject = 1; subject <= AmountOfClasses; subject++)
+                    var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/tbody"));
+                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(50);
+                    int AmountOfClasses = Int32.Parse(block.GetAttribute("childElementCount"));
+
+
+                    var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/thead/tr/th/h5"));
+                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+
+                    int SeparatorIndex = WeekDayLabel.Text.IndexOf(",") + 2;
+                    string WeekDayLabelDate = WeekDayLabel.Text.Substring(SeparatorIndex);
+
+                    //get only for an exact day - make an exeption if day does not exist
+                    if (Date == WeekDayLabelDate)
                     {
-                        try
+                        if (Int32.Parse(driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/tbody")).GetAttribute("childElementCount")) > 1)
                         {
-                            //x - Пара
-                            var SubjectNumber = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{ExactDay}]/div/table/tbody/tr[{subject}]/td[1]/span")).GetAttribute("innerText");
-                            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(50);
-
-                            if (Int32.Parse(driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{ExactDay}]/div/table/tbody/tr[{subject}]/td[2]")).GetAttribute("childElementCount")) != 0)
+                            for (int subject = 1; subject <= AmountOfClasses; subject++)
                             {
-                                //Subject Info
-                                var SubjectInfo = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{ExactDay}]/div/table/tbody/tr[{subject}]/td[2]/a")).GetAttribute("innerText");
-                                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(50);
+                                try
+                                {
+                                    //x - Пара
+                                    var SubjectNumber = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/tbody/tr[{subject}]/td[1]/span")).GetAttribute("innerText");
+                                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(50);
 
-                                //result string view
-                                DaySchedule += "\n" + WeekDayLabel.Text + "\n" + SubjectNumber + ":    " + SubjectInfo + "\n";
-                                Console.WriteLine(DaySchedule);
+                                    if (Int32.Parse(driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/tbody/tr[{subject}]/td[2]")).GetAttribute("childElementCount")) != 0)
+                                    {
+                                        //Subject Info
+                                        var SubjectInfo = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/tbody/tr[{subject}]/td[2]/a")).GetAttribute("innerText");
+                                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(50);
+
+                                        //result string view
+                                        //only if WeekDayLabel.Text == Date we send output 
+                                        DaySchedule += "\n" + WeekDayLabel.Text + "\n" + SubjectNumber + ":    " + SubjectInfo + "\n";
+                                    }
+                                }
+                                catch (NoSuchElementException e)
+                                {
+                                    //=> Class does not exist
+                                    //Console.WriteLine(e);
+                                }
                             }
                         }
-                        catch (NoSuchElementException e)
+                        else
                         {
-                            Console.WriteLine(e);
+                            DaySchedule += "\n" + WeekDayLabel.Text + "\n" + "Нет занятий" + "\n";
                         }
                     }
-                }
-                else
-                {
-                    DaySchedule += "\n" + WeekDayLabel.Text + "\n" + "Нет занятий" + "\n";
+                    else
+                    {
+                        DaySchedule += "\n" + Date + "\n" + "Нет занятий" + "\n";
+
+                    }
                 }
                 return DaySchedule;
             }
