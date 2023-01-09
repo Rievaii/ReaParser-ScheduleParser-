@@ -98,7 +98,6 @@ namespace ScheduleParser
                                         Keyboard = keyboard,
                                         Message = "Сохраненная вами группа:  " + database.GetUserGroup(messageNew.Message.UserId.Value.ToString())
                                     });
-                                    //UserGroup = database.GetUserGroup(UserId.ToString());
                                 }
                             }
 
