@@ -94,6 +94,7 @@ namespace ScheduleParser
                 }
 
             });
+            driver.Quit();
             return WeekSchedule;
         }
 
@@ -170,11 +171,14 @@ namespace ScheduleParser
                                 DaySchedule += "\n" + WeekDayLabel.Text + "\n" + "Нет занятий" + "\n";
                             }
                         }
+                        /*
                         else
                         {
                             DaySchedule += "\n" + Date + "\n" + "Нет занятий" + "\n";
 
                         }
+                        */
+                        
                     }
 
                     return DaySchedule;
@@ -186,6 +190,7 @@ namespace ScheduleParser
                     return "";
                 }
             });
+            driver.Quit();
             return DaySchedule;
         }
     }
