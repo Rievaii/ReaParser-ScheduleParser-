@@ -75,6 +75,7 @@ namespace ScheduleParser
 
                             if (messageNew.Message.Text == "Начать")
                             {
+                                //check if user in db
                                 if (database.GetUserGroup(messageNew.Message.PeerId.Value.ToString()) == "")
                                 {
                                     api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
@@ -210,6 +211,7 @@ namespace ScheduleParser
                                     break;
                             }
                         }
+                        //wait for a new message with group 
                         if (GroupButtonPressed)
                         {
                             GetGroupNumber();

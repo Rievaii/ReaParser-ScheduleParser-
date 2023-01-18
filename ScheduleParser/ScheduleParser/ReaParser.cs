@@ -8,9 +8,6 @@ namespace ScheduleParser
 {
     internal class ReaParser
     {
-        private IWebDriver driver = new ChromeDriver();
-
-        private string URL = "https://rasp.rea.ru/";
         public bool UnableToGetToWebSite { get; set; }
 
         private string WeekSchedule;
@@ -18,6 +15,11 @@ namespace ScheduleParser
 
         public async Task<string> RunParser(string _GroupId)
         {
+
+
+            IWebDriver driver = new ChromeDriver();
+
+            string URL = "https://rasp.rea.ru/";
 
             string GroupId = _GroupId;
             WeekSchedule = "";
@@ -103,6 +105,10 @@ namespace ScheduleParser
 
         public async Task<string> RunParser(string _GroupId, string Date)
         {
+            IWebDriver driver = new ChromeDriver();
+
+            string URL = "https://rasp.rea.ru/";
+
             string GroupId = _GroupId;
 
             DaySchedule = "";
@@ -162,7 +168,6 @@ namespace ScheduleParser
                                     catch (NoSuchElementException e)
                                     {
                                         //=> Class does not exist
-                                        //Console.WriteLine(e);
                                     }
                                 }
                             }
@@ -171,14 +176,6 @@ namespace ScheduleParser
                                 DaySchedule += "\n" + WeekDayLabel.Text + "\n" + "Нет занятий" + "\n";
                             }
                         }
-                        /*
-                        else
-                        {
-                            DaySchedule += "\n" + Date + "\n" + "Нет занятий" + "\n";
-
-                        }
-                        */
-                        
                     }
 
                     return DaySchedule;
