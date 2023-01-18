@@ -21,23 +21,24 @@ namespace ScheduleParser
 
             string GroupId = _GroupId;
             WeekSchedule = "";
-
-            try
+            await Task.Run(() =>
             {
-                driver.Navigate().GoToUrl(URL);
-
-                IWebElement input = driver.FindElement(By.CssSelector("#search"));
-                input.Click();
-
-                input.SendKeys(GroupId);
-
-                IWebElement search = driver.FindElement(By.Id("manual-search-btn"));
-                search.Click();
-
-                Thread.Sleep(1000);
-
-                await Task.Run(() =>
+                try
                 {
+
+                    driver.Navigate().GoToUrl(URL);
+
+                    IWebElement input = driver.FindElement(By.CssSelector("#search"));
+                    input.Click();
+
+                    input.SendKeys(GroupId);
+
+                    IWebElement search = driver.FindElement(By.Id("manual-search-btn"));
+                    search.Click();
+
+                    Thread.Sleep(1000);
+
+
                     for (int Day = 1; Day <= 6; Day++)
                     {
                         var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/tbody"));
@@ -82,16 +83,20 @@ namespace ScheduleParser
                             WeekSchedule += "\n" + WeekDayLabel.Text + "\n" + "Нет занятий" + "\n";
                         }
                     }
-                });
-                return WeekSchedule;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("\n Unable to get to the website \n" + e.Message);
-                UnableToGetToWebSite = true;
-                return "";
-            }
+
+                    return WeekSchedule;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("\n Unable to get to the website \n" + e.Message);
+                    UnableToGetToWebSite = true;
+                    return "";
+                }
+
+            });
+            return WeekSchedule;
         }
+
 
         //:Override for the day 
 
@@ -100,22 +105,22 @@ namespace ScheduleParser
             string GroupId = _GroupId;
 
             DaySchedule = "";
-
-            try
+            await Task.Run(() =>
             {
-                driver.Navigate().GoToUrl(URL);
-
-                IWebElement input = driver.FindElement(By.CssSelector("#search"));
-                input.Click();
-
-                input.SendKeys(GroupId);
-                IWebElement search = driver.FindElement(By.Id("manual-search-btn"));
-                search.Click();
-
-                Thread.Sleep(1000);
-
-                await Task.Run(() =>
+                try
                 {
+                    driver.Navigate().GoToUrl(URL);
+
+                    IWebElement input = driver.FindElement(By.CssSelector("#search"));
+                    input.Click();
+
+                    input.SendKeys(GroupId);
+                    IWebElement search = driver.FindElement(By.Id("manual-search-btn"));
+                    search.Click();
+
+                    Thread.Sleep(1000);
+
+
                     for (int Day = 1; Day <= 6; Day++)
                     {
                         var block = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/tbody"));
@@ -171,15 +176,17 @@ namespace ScheduleParser
 
                         }
                     }
-                });
-                return DaySchedule;
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("\n Unable to get to the website \n");
-                UnableToGetToWebSite = true;
-                return "";
-            }
+
+                    return DaySchedule;
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("\n Unable to get to the website \n");
+                    UnableToGetToWebSite = true;
+                    return "";
+                }
+            });
+            return DaySchedule;
         }
     }
 }

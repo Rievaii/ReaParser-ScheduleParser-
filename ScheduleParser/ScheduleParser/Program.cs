@@ -1,17 +1,18 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace ScheduleParser
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        private async static Task Main(string[] args)
         {
 
             Database database = new Database();
             
             VKBot vk = new VKBot();
 
-            vk.VkConnect();
+            await vk.VkConnectAsync();
 
         }
     }
