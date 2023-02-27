@@ -1,5 +1,5 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Firefox;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +15,16 @@ namespace ScheduleParser
 
         public async Task<string> RunParser(string _GroupId)
         {
-            IWebDriver driver = new ChromeDriver();
+
+
+            var firefoxOptions = new FirefoxOptions();
+
+            firefoxOptions.AddArgument("--no-sandbox");
+            firefoxOptions.AddArgument("--headless");
+            //C:\Users\dolgopolov.kv\Documents\GitHub\ScheduleParser
+            // /home/app-admin/
+            IWebDriver driver = new FirefoxDriver(@"/home/app-admin/", firefoxOptions);
+
 
             string URL = "https://rasp.rea.ru/";
 
@@ -49,16 +58,13 @@ namespace ScheduleParser
                         var WeekDayLabel = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/thead/tr/th/h5"));
                         driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
 
-
+                        WeekSchedule += "\n &#128309;" + WeekDayLabel.Text;
                         if (Int32.Parse(driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/tbody")).GetAttribute("childElementCount")) > 1)
                         {
                             for (int subject = 1; subject <= AmountOfClasses; subject++)
                             {
                                 try
                                 {
-                                    //x - Пара
-                                    var SubjectNumber = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/tbody/tr[{subject}]/td[1]/span")).GetAttribute("innerText");
-                                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(50);
 
                                     if (Int32.Parse(driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/tbody/tr[{subject}]/td[2]")).GetAttribute("childElementCount")) != 0)
                                     {
@@ -66,8 +72,11 @@ namespace ScheduleParser
                                         var SubjectInfo = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/tbody/tr[{subject}]/td[2]/a")).GetAttribute("innerText");
                                         driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(50);
 
+                                        var ClassTime = driver.FindElement(By.XPath($"//*[@id=\"zoneTimetable\"]/div/div[{Day}]/div/table/tbody/tr[{subject}]/td[1]")).GetAttribute("innerText");
+                                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(50);
+
                                         //result string view
-                                        WeekSchedule += "\n" + WeekDayLabel.Text + "\n" + SubjectNumber + ":    " + SubjectInfo + "\n";
+                                        WeekSchedule += "\n "+ "&#9726; " +  + ClassTime + ":    " + SubjectInfo + "\n";
                                         //Console.WriteLine(WeekSchedule);
                                     }
                                 }
@@ -80,7 +89,7 @@ namespace ScheduleParser
                         }
                         else
                         {
-                            WeekSchedule += "\n" + WeekDayLabel.Text + "\n" + "Нет занятий" + "\n";
+                            WeekSchedule += "\n "+ "&#9726; " + "Нет занятий" + "\n";
                         }
                     }
 
@@ -103,13 +112,20 @@ namespace ScheduleParser
 
         public async Task<string> RunParser(string _GroupId, string Date)
         {
-            IWebDriver driver = new ChromeDriver();
+            var firefoxOptions = new FirefoxOptions();
+
+            firefoxOptions.AddArgument("--no-sandbox");
+            firefoxOptions.AddArgument("--headless");
+
+            IWebDriver driver = new FirefoxDriver(@"/home/app-admin/", firefoxOptions);
+
 
             string URL = "https://rasp.rea.ru/";
 
             string GroupId = _GroupId;
 
             DaySchedule = "";
+
             await Task.Run(() =>
             {
                 try
@@ -142,25 +158,27 @@ namespace ScheduleParser
                         //get only for an exact day - make an exeption if day does not exist
                         if (Date == WeekDayLabelDate)
                         {
+                            DaySchedule += "\n" + WeekDayLabel.Text;
                             if (Int32.Parse(driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/tbody")).GetAttribute("childElementCount")) > 1)
                             {
                                 for (int subject = 1; subject <= AmountOfClasses; subject++)
                                 {
                                     try
                                     {
-                                        //x - Пара
-                                        var SubjectNumber = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/tbody/tr[{subject}]/td[1]/span")).GetAttribute("innerText");
-                                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(50);
-
                                         if (Int32.Parse(driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/tbody/tr[{subject}]/td[2]")).GetAttribute("childElementCount")) != 0)
                                         {
                                             //Subject Info
                                             var SubjectInfo = driver.FindElement(By.XPath($"//*[@id='zoneTimetable']/div/div[{Day}]/div/table/tbody/tr[{subject}]/td[2]/a")).GetAttribute("innerText");
                                             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(50);
 
+                                            //Class Time
+                                            var ClassTime = driver.FindElement(By.XPath($"//*[@id=\"zoneTimetable\"]/div/div[{Day}]/div/table/tbody/tr[{subject}]/td[1]")).GetAttribute("innerText");
+                                            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(50);
+
+
                                             //result string view
-                                            //only if WeekDayLabel.Text == Date we send output 
-                                            DaySchedule += "\n" + WeekDayLabel.Text + "\n" + SubjectNumber + ":    " + SubjectInfo + "\n";
+                                            //only if WeekDayLabel.Text == Date we fill string 
+                                            DaySchedule += "\n" + " &#9726; " + ClassTime + ":    " + SubjectInfo + "\n";
                                         }
                                     }
                                     catch (NoSuchElementException e)
@@ -171,7 +189,7 @@ namespace ScheduleParser
                             }
                             else
                             {
-                                DaySchedule += "\n" + WeekDayLabel.Text + "\n" + "Нет занятий" + "\n";
+                                DaySchedule += "\n" + "&#9726; " + "Нет занятий" + "\n";
                             }
                         }
                     }
@@ -190,4 +208,3 @@ namespace ScheduleParser
         }
     }
 }
-

@@ -1,5 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.VisualBasic;
+using System.Net.Http;
 using VkNet;
 using VkNet.Enums.SafetyEnums;
 using VkNet.Exception;
@@ -19,22 +20,55 @@ namespace ScheduleParser
         DateTime date = DateTime.Now;
         private DateTime ClockInfoFromSystem = DateTime.Now;
 
+        public LongPollServerResponse settings;
+
         public async Task VkConnectAsync()
         {
-            DotNetEnv.Env.Load(@"C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\ScheduleParser\.env");
-            var m_AccessToken = Environment.GetEnvironmentVariable("TOKEN");
+            //DotNetEnv.Env.Load(@"C:\Users\Admin\Documents\GitHub\ReaParser-ScheduleParser-\ScheduleParser\ScheduleParser\.env");
+            var m_AccessToken = "3045ca193a28e30a92aa9aafd879e410a641a430b797723e54c21410a7c8dec61100f3bbc0fdc4fa4f9bf"; //Environment.GetEnvironmentVariable("TOKEN");
 
             string Today = date.ToString("d");
             string Tommorow = DateTime.Today.AddDays(1).ToString("d");
             bool GroupButtonPressed = false;
 
+            ulong GroupIdentificator = 213384546;
 
-            api.Authorize(new ApiAuthParams
+            int RetriedConnection = 0;
+            bool Connected = false;
+
+
+            while (!Connected)
             {
-                AccessToken = $"{m_AccessToken}"
-            });
+                try
+                {
+                    api.Authorize(new ApiAuthParams
+                    {
+                        AccessToken = $"{m_AccessToken}"
+                    });
 
-            var settings = api.Groups.GetLongPollServer(215942977);
+                    settings = api.Groups.GetLongPollServer(GroupIdentificator);
+                    Connected = true;
+                }
+                catch (HttpRequestException httpRequestException)
+                {
+                    Console.WriteLine(httpRequestException);
+
+                    System.Threading.Thread.Sleep(3000);
+
+                    if (RetriedConnection == 5)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        RetriedConnection++;
+                        Console.WriteLine("Нет доступа к вк. \n Переподключение...");
+                        continue;
+                    }
+                }
+            }
+
+
 
             var keyboard = new KeyboardBuilder()
                 .AddButton("Расписание на неделю", "scheduleWeek", KeyboardButtonColor.Primary)
@@ -42,6 +76,7 @@ namespace ScheduleParser
                 .SetOneTime()
                 .AddLine()
                 .AddButton("Расписание на сегодня", "scheduleToday", KeyboardButtonColor.Positive)
+        .AddLine()
                 .AddButton("Расписание на завтра", "scheduleTommorow", KeyboardButtonColor.Positive)
                 .AddLine()
                 .AddButton("К выбору группы", "choosegroup", KeyboardButtonColor.Negative)
@@ -54,7 +89,7 @@ namespace ScheduleParser
                 .AddLine()
                 .Build();
 
-            while (true)
+            while (Connected)
             {
                 try
                 {
@@ -120,7 +155,14 @@ namespace ScheduleParser
                             switch (button.Message.Payload)
                             {
                                 case "{\"button\":\"scheduleToday\"}":
-
+                                    api.Messages.Send(new MessagesSendParams
+                                    {
+                                        RandomId = rnd.Next(100000),
+                                        PeerId = button.Message.PeerId.Value,
+                                        UserId = api.UserId.Value,
+                                        Keyboard = keyboard,
+                                        Message = "Погоди немного, посмотрим, что тебе сегодня предстоит"
+                                    });
                                     if (database.GetUserGroup(button.Message.PeerId.Value.ToString()) != null)
                                     {
                                         api.Messages.Send(new MessagesSendParams
@@ -129,7 +171,7 @@ namespace ScheduleParser
                                             PeerId = button.Message.PeerId.Value,
                                             UserId = api.UserId.Value,
                                             Keyboard = keyboard,
-                                            Message = "Расписание группы " + database.GetUserGroup(button.Message.PeerId.Value.ToString()) + " на сегодня: \n" + await parser.RunParser(database.GetUserGroup(button.Message.PeerId.Value.ToString()), Today)
+                                            Message = "Расписание группы " + database.GetUserGroup(button.Message.PeerId.Value.ToString()) + " на " + Today + ": \n" + await parser.RunParser(database.GetUserGroup(button.Message.PeerId.Value.ToString()), Today)
                                         });
                                     }
                                     else
@@ -146,7 +188,14 @@ namespace ScheduleParser
                                     break;
 
                                 case "{\"button\":\"scheduleTommorow\"}":
-
+                                    api.Messages.Send(new MessagesSendParams
+                                    {
+                                        RandomId = rnd.Next(100000),
+                                        PeerId = button.Message.PeerId.Value,
+                                        UserId = api.UserId.Value,
+                                        Keyboard = keyboard,
+                                        Message = "Сейчас поглядим что у тебя завтра, не торопись"
+                                    });
                                     if (database.GetUserGroup(button.Message.PeerId.Value.ToString()) != null)
                                     {
                                         api.Messages.Send(new MessagesSendParams
@@ -155,7 +204,7 @@ namespace ScheduleParser
                                             PeerId = button.Message.PeerId.Value,
                                             UserId = api.UserId.Value,
                                             Keyboard = keyboard,
-                                            Message = "Расписание группы " + database.GetUserGroup(button.Message.PeerId.Value.ToString()) + " на завтра: \n" +await parser.RunParser(database.GetUserGroup(button.Message.PeerId.Value.ToString()), Tommorow)
+                                            Message = "Расписание группы " + database.GetUserGroup(button.Message.PeerId.Value.ToString()) + " на " + Tommorow + ": \n" + await parser.RunParser(database.GetUserGroup(button.Message.PeerId.Value.ToString()), Tommorow)
                                         });
                                     }
                                     else
@@ -172,7 +221,14 @@ namespace ScheduleParser
                                     break;
 
                                 case "{\"button\":\"scheduleWeek\"}":
-
+                                    api.Messages.Send(new MessagesSendParams
+                                    {
+                                        RandomId = rnd.Next(100000),
+                                        PeerId = button.Message.PeerId.Value,
+                                        UserId = api.UserId.Value,
+                                        Keyboard = keyboard,
+                                        Message = "Да уж, ну и неделька, ща покажу"
+                                    });
                                     if (database.GetUserGroup(button.Message.PeerId.Value.ToString()) != null)
                                     {
                                         api.Messages.Send(new MessagesSendParams
@@ -181,7 +237,7 @@ namespace ScheduleParser
                                             PeerId = button.Message.PeerId.Value,
                                             UserId = api.UserId.Value,
                                             Keyboard = keyboard,
-                                            Message = "Расписание группы " + database.GetUserGroup(button.Message.PeerId.Value.ToString()) + " на эту неделю: \n" + await parser.RunParser(database.GetUserGroup(button.Message.PeerId.Value.ToString()))
+                                            Message = "Погоди немного, сейчас будет расписание этой групппы " + database.GetUserGroup(button.Message.PeerId.Value.ToString()) + " на неделю: \n" + await parser.RunParser(database.GetUserGroup(button.Message.PeerId.Value.ToString()))
                                         });
                                     }
                                     else
@@ -217,12 +273,9 @@ namespace ScheduleParser
                             GetGroupNumber();
                             async void GetGroupNumber()
                             {
-                                string UserGroup = null;
-                                string UserId = null;
-
                                 await Task.Run(() =>
                                 {
-                                    while (UserGroup == null)
+                                    while (GroupButtonPressed)
                                     {
                                         if (element.Instance is MessageNew groupnumber)
                                         {
@@ -230,8 +283,9 @@ namespace ScheduleParser
                                             //exploit is still exists 15.any number
                                             if (groupnumber.Message.Text.StartsWith("15.") && groupnumber.Message.Text.Length < 20)
                                             {
-                                                UserGroup = groupnumber.Message.Text;
-                                                UserId = groupnumber.Message.PeerId.Value.ToString();
+                                                string UserGroup = groupnumber.Message.Text;
+                                                string UserId = groupnumber.Message.PeerId.Value.ToString();
+
                                                 api.Messages.Send(new VkNet.Model.RequestParams.MessagesSendParams
                                                 {
                                                     RandomId = rnd.Next(100000),
@@ -240,15 +294,11 @@ namespace ScheduleParser
                                                     Keyboard = keyboard,
                                                     Message = "Вы выбрали " + UserGroup + " группу \n"
                                                 });
-
-                                                database.AddUser(UserId,UserGroup);
-                                                UserId = null;
-                                                UserGroup = null;
-                                                break;
+                                                database.AddUser(UserId, UserGroup);
+                                                GroupButtonPressed = false;
                                             }
                                         }
                                     }
-                                    GroupButtonPressed = false;
                                 });
                             }
                         }
@@ -260,11 +310,14 @@ namespace ScheduleParser
                         settings.Ts = outdateException.Ts;
                     else
                     {
-                        settings = api.Groups.GetLongPollServer(215942977);
+                        settings = api.Groups.GetLongPollServer(GroupIdentificator);
                     }
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception.Message);
                 }
             }
         }
     }
 }
-
